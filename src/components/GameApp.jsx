@@ -5,21 +5,17 @@ import AppHeader from './AppHeader.jsx';
 import BottomNav from './BottomNav.jsx';
 import CategorySidebar from './CategorySidebar.jsx';
 import Icon from './Icon.jsx';
-import ProviderSection from './ProviderSection.jsx';
 import ProviderTile from './ProviderTile.jsx';
 
 function AppInner({
   web,
   user,
   providers,
-  games,
-  getGames,
   initialCategory,
   activeNav = 'home',
   navFixed = true,
   showCounts = false,
   onPlay,
-  onViewAll,
   onNavigate,
   onCategoryChange,
   children,
@@ -52,8 +48,6 @@ function AppInner({
   const list = cat ? providersFor(cat, data) : [];
   const counts = showCounts ? Object.fromEntries(cats.map((c) => [c.key, providersFor(c, data).length])) : null;
 
-  const gamesOf = (p) => (getGames ? getGames(p, cat) : games?.[p.provider] ?? null);
-
   const selectCat = (k) => {
     setCatKey(k);
     onCategoryChange?.(k);
@@ -82,17 +76,12 @@ function AppInner({
                 </div>
               )}
 
-              {cat?.display === 'providers' ? (
-                <div className="ta-ptiles">
-                  {list.map((p) => (
-                    <ProviderTile key={p.provider} provider={p} onPlay={onPlay} />
-                  ))}
-                </div>
-              ) : (
-                list.map((p) => (
-                  <ProviderSection key={p.provider} provider={p} games={gamesOf(p)} onPlay={onPlay} onViewAll={onViewAll} />
-                ))
-              )}
+              {/* providers only for now — game lists come later */}
+              <div className="ta-ptiles">
+                {list.map((p) => (
+                  <ProviderTile key={p.provider} provider={p} onPlay={onPlay} />
+                ))}
+              </div>
             </>
           )}
         </main>
@@ -111,7 +100,7 @@ function AppInner({
 }
 
 /**
- * Whole app: header + (category sidebar | provider sections) + bottom nav.
+ * Whole app: header + (category sidebar | provider tiles of the selected category) + bottom nav.
  * `children`, when given, replaces the provider content (use it for other pages).
  */
 export default function GameApp({ config, className, ...props }) {
