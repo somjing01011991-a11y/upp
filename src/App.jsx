@@ -48,6 +48,11 @@ export default function App() {
     () => (webConfig?.colors ? { ...theme, colors: { ...theme.colors, ...webConfig.colors } } : theme),
     [webConfig],
   );
+  // browser tab title follows the site name from webconfig
+  useEffect(() => {
+    if (webConfig?.company) document.title = webConfig.company;
+  }, [webConfig]);
+
   const siteWeb = useMemo(
     () => ({
       ...web,
