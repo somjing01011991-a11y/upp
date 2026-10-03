@@ -313,8 +313,9 @@
 /* back button + game-name search on one row above an open provider's games */
 .ta-open-bar { display: flex; align-items: center; gap: 8px; }
 .ta-open-bar .ta-back { flex: none; height: 40px; }
+.ta-open-bar .ta-search { flex: 1; min-width: 0; }
 .ta-search {
-  flex: 1; min-width: 0;
+  flex: none;
   display: flex; align-items: center; gap: 8px; padding: 0 14px; height: 40px;
   background: var(--c-card); border: 1px solid var(--c-line); border-radius: var(--r-pill); color: var(--c-muted);
 }

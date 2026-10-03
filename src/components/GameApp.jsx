@@ -52,6 +52,13 @@ function AppInner({
   const list = cat ? providersFor(cat, data) : [];
   const counts = showCounts ? Object.fromEntries(cats.map((c) => [c.key, providersFor(c, data).length])) : null;
 
+  // provider-name search in the grid (name or code, case-insensitive, cleared when the category changes)
+  const [providerQuery, setProviderQuery] = useState('');
+  const pq = providerQuery.trim().toLowerCase();
+  const shownProviders = pq
+    ? list.filter((p) => `${p.providerName || ''} ${p.provider || ''}`.toLowerCase().includes(pq))
+    : list;
+
   // provider opened from the grid — its game list replaces the grid
   const [openKey, setOpenKey] = useState(null);
   const open = list.find((p) => p.provider === openKey) || null;
@@ -73,15 +80,14 @@ function AppInner({
     window.scrollTo?.({ top: 0, behavior: 'smooth' });
   };
 
-  // floating "back to providers" + "scroll to top" buttons once the game list is scrolled down
+  // floating buttons once the page is scrolled down: "scroll to top" (+ "back to providers" in a game list)
   const [scrolled, setScrolled] = useState(false);
   useEffect(() => {
-    if (!openKey) return undefined;
     const onScroll = () => setScrolled(window.scrollY > 300);
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
-  }, [openKey]);
+  }, []);
 
   const toTop = () => window.scrollTo?.({ top: 0, behavior: 'smooth' });
   const closeProvider = () => {
@@ -92,6 +98,7 @@ function AppInner({
   const selectCat = (k) => {
     setCatKey(k);
     setOpenKey(null);
+    setProviderQuery('');
     onCategoryChange?.(k);
     window.scrollTo?.({ top: 0, behavior: 'smooth' });
   };
@@ -143,28 +150,49 @@ function AppInner({
                   ) : (
                     <ProviderSection provider={open} games={shownGames} full onPlay={onPlay} />
                   )}
-                  {scrolled && (
-                    <div className="ta-float">
-                      <button type="button" className="ta-float-back" onClick={closeProvider}>
-                        <Icon name="chevron" />
-                        {cfg.texts.back}
-                      </button>
-                      <button type="button" className="ta-float-top" onClick={toTop} aria-label={cfg.texts.toTop}>
-                        <Icon name="chevron" />
-                      </button>
+                </>
+              ) : (
+                <>
+                  {list.length > 0 && (
+                    <label className="ta-search">
+                      <Icon name="search" />
+                      <input
+                        type="search"
+                        value={providerQuery}
+                        onChange={(e) => setProviderQuery(e.target.value)}
+                        placeholder={cfg.texts.searchProviders}
+                        aria-label={cfg.texts.searchProviders}
+                      />
+                    </label>
+                  )}
+                  {pq && shownProviders.length === 0 ? (
+                    <p className="ta-search-empty">{cfg.texts.noProvidersFound}</p>
+                  ) : (
+                    <div className="ta-ptiles">
+                      {shownProviders.map((p) => (
+                        <ProviderTile
+                          key={p.provider}
+                          provider={p}
+                          cta={p.detailStatus === false ? undefined : cfg.texts.games}
+                          onSelect={openProvider}
+                        />
+                      ))}
                     </div>
                   )}
                 </>
-              ) : (
-                <div className="ta-ptiles">
-                  {list.map((p) => (
-                    <ProviderTile
-                      key={p.provider}
-                      provider={p}
-                      cta={p.detailStatus === false ? undefined : cfg.texts.games}
-                      onSelect={openProvider}
-                    />
-                  ))}
+              )}
+
+              {scrolled && (
+                <div className="ta-float">
+                  {open && (
+                    <button type="button" className="ta-float-back" onClick={closeProvider}>
+                      <Icon name="chevron" />
+                      {cfg.texts.back}
+                    </button>
+                  )}
+                  <button type="button" className="ta-float-top" onClick={toTop} aria-label={cfg.texts.toTop}>
+                    <Icon name="chevron" />
+                  </button>
                 </div>
               )}
             </>

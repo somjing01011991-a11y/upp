@@ -53,6 +53,8 @@
     "toTop": "กลับขึ้นด้านบน",
     "searchGames": "ค้นหาชื่อเกม",
     "noGamesFound": "ไม่พบเกมที่ค้นหา",
+    "searchProviders": "ค้นหาชื่อค่ายเกม",
+    "noProvidersFound": "ไม่พบค่ายเกมที่ค้นหา",
     "promotions": "โปรโมชั่น",
     "promoLoading": "กำลังโหลดโปรโมชั่น…",
     "promoEmpty": "ยังไม่มีโปรโมชั่น",
