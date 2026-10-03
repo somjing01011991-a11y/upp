@@ -1,12 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import GameApp from './components/GameApp.jsx';
+import RegisterForm from './components/RegisterForm.jsx';
 import theme from './config/theme.json';
 import { web, user } from './data/session.js';
 import { fetchGames, fetchProviders } from './lib/api.js';
 import { normalizeProviders, providersFor } from './lib/providers.js';
 
 // หน้าของเมนูบาร์ที่ยังไม่ได้ทำ — แทนที่ด้วยหน้าจริง
-const PAGE_TITLE = { wallet: 'ฝากถอน', promo: 'โปรโมชั่น', profile: 'โปรไฟล์', contact: 'ติดต่อ' };
+const PAGE_TITLE = { wallet: 'ฝากถอน', promo: 'โปรโมชั่น', contact: 'ติดต่อ' };
 
 function PlaceholderPage({ title }) {
   return (
@@ -69,7 +70,12 @@ export default function App() {
       onPlay={handlePlay}
       onViewAll={(p) => console.log('view all', p.provider)}
     >
-      {page === 'home' ? undefined : <PlaceholderPage title={PAGE_TITLE[page]} />}
+      {page === 'home' ? undefined : page === 'profile' ? (
+        // ตอนนี้เมนูโปรไฟล์เปิดฟอร์มสมัครสมาชิก — ย้ายไปปุ่ม/หน้าที่ต้องการได้
+        <RegisterForm />
+      ) : (
+        <PlaceholderPage title={PAGE_TITLE[page]} />
+      )}
     </GameApp>
   );
 }
