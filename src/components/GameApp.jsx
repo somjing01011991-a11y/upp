@@ -56,6 +56,13 @@ function AppInner({
   const [openKey, setOpenKey] = useState(null);
   const open = list.find((p) => p.provider === openKey) || null;
 
+  // game-name search inside the open provider (case-insensitive, cleared when the provider changes)
+  const [query, setQuery] = useState('');
+  useEffect(() => setQuery(''), [openKey]);
+  const openGames = open ? games?.[open.provider] : undefined;
+  const q = query.trim().toLowerCase();
+  const shownGames = q && openGames ? openGames.filter((g) => (g.gameName || '').toLowerCase().includes(q)) : openGames;
+
   const openProvider = (p) => {
     if (p.detailStatus === false) {
       onPlay?.(null, p);
@@ -117,7 +124,23 @@ function AppInner({
                     <Icon name="chevron" />
                     {cfg.texts.back}
                   </button>
-                  <ProviderSection provider={open} games={games?.[open.provider]} full onPlay={onPlay} />
+                  {openGames?.length > 0 && (
+                    <label className="ta-search">
+                      <Icon name="search" />
+                      <input
+                        type="search"
+                        value={query}
+                        onChange={(e) => setQuery(e.target.value)}
+                        placeholder={cfg.texts.searchGames}
+                        aria-label={cfg.texts.searchGames}
+                      />
+                    </label>
+                  )}
+                  {q && shownGames?.length === 0 ? (
+                    <p className="ta-search-empty">{cfg.texts.noGamesFound}</p>
+                  ) : (
+                    <ProviderSection provider={open} games={shownGames} full onPlay={onPlay} />
+                  )}
                   {scrolled && (
                     <div className="ta-float">
                       <button type="button" className="ta-float-back" onClick={closeProvider}>
