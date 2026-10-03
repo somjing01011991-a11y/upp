@@ -1,9 +1,11 @@
 /**
- * Accepts the full provider API response ({ code, msg, data }) or just its `data`.
+ * Accepts the provider API response ({ msg, data }) or just its `data`, where `data` is either
+ * a flat list (grouped here by lowercased providerType: SLOT → slot, AFB → afb) or already keyed.
  * Drops non-ACTIVE providers and duplicates inside each key.
  */
 export function normalizeProviders(resp) {
-  const data = resp && resp.data && !Array.isArray(resp.data) ? resp.data : resp || {};
+  let data = resp && resp.data ? resp.data : resp || {};
+  if (Array.isArray(data)) data = groupByType(data);
   const out = {};
   for (const [key, list] of Object.entries(data)) {
     const seen = new Set();
@@ -12,6 +14,15 @@ export function normalizeProviders(resp) {
       seen.add(p.provider);
       return true;
     });
+  }
+  return out;
+}
+
+function groupByType(list) {
+  const out = {};
+  for (const p of list) {
+    if (!p || !p.providerType) continue;
+    (out[p.providerType.toLowerCase()] ||= []).push(p);
   }
   return out;
 }

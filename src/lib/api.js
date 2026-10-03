@@ -1,15 +1,19 @@
 import sampleProviders from '../data/sampleProviders.js';
 
-const PROVIDER_API = import.meta.env.VITE_PROVIDER_API;
+import { API_SERVER } from '../config/api.js';
+
 const GAMES_API = import.meta.env.VITE_GAMES_API;
 
-/** Provider list. Uses VITE_PROVIDER_API when set, otherwise the bundled sample. */
+/**
+ * Provider list: GET {API_SERVER}/member/gameprovider → { msg: true, data: [provider, ...] }.
+ * Uses the bundled sample when API_SERVER is empty.
+ */
 export async function fetchProviders() {
-  if (!PROVIDER_API) return sampleProviders;
-  const res = await fetch(PROVIDER_API);
+  if (!API_SERVER) return sampleProviders;
+  const res = await fetch(`${API_SERVER}/member/gameprovider`);
   if (!res.ok) throw new Error(`Provider API ${res.status}`);
   const json = await res.json();
-  if (json.code !== 0) throw new Error(json.msg || 'Provider API error');
+  if (json.msg !== true) throw new Error(typeof json.msg === 'string' ? json.msg : 'Provider API error');
   return json;
 }
 

@@ -16,6 +16,7 @@ npm run build      # ไฟล์พร้อมขึ้นเซิร์ฟ�
 ```
 src/
   config/theme.json        ← ปรับสี มุม ฟอนต์ เลย์เอาต์ ข้อความ หมวด เมนู ที่นี่
+  config/api.js            ← API_SERVER (ค่าเริ่มต้น http://127.0.0.1:7001/api)
   data/session.js          ← ข้อมูลเว็บ (logo, Name) และผู้ใช้
   data/sampleProviders.js  ← ข้อมูลค่ายตัวอย่าง (ใช้เมื่อไม่ได้ตั้ง API)
   lib/api.js               ← fetchProviders / fetchGames
@@ -36,14 +37,16 @@ src/
 
 ## เชื่อม API จริง
 
-คัดลอก `.env.example` เป็น `.env` แล้วใส่
+ค่า apiserver เก็บไว้ที่ `src/config/api.js` (ค่าเริ่มต้น `http://127.0.0.1:7001/api`) เปลี่ยนได้โดยคัดลอก `.env.example` เป็น `.env` แล้วใส่
 
 ```
-VITE_PROVIDER_API=https://your-api/providers
+VITE_API_SERVER=http://127.0.0.1:7001/api
 VITE_GAMES_API=https://your-api/games?provider={provider}&type={type}
 ```
 
-- `VITE_PROVIDER_API` ต้องคืน `{ code: 0, msg, data: { slot: [...], casino: [...], ... } }` ตามรูปแบบเดิม
+- รายชื่อค่ายโหลดจาก `GET {VITE_API_SERVER}/member/gameprovider` ซึ่งคืน `{ msg: true, data: [ { provider, providerType, ... } ] }` แล้วจัดเข้าหมวดตาม `providerType` ตัวพิมพ์เล็ก (`SLOT` → `slot`, `AFB` → `afb`) ให้ตรงกับ `sources` ใน `theme.json`
+- ใส่ `VITE_API_SERVER=` (ค่าว่าง) เพื่อใช้ข้อมูลตัวอย่างแทน
+- เซิร์ฟเวอร์ต้องเปิด CORS ให้ต้นทางของหน้าเว็บ (เช่น `http://localhost:5173`)
 - `VITE_GAMES_API` — ปรับการแปลงข้อมูลใน `fetchGames()` (`src/lib/api.js`) ให้ตรงกับ response จริง ผลลัพธ์ต้องเป็น `[{ gameCode, gameName, imageURL, tag }]` ถ้าไม่ได้ตั้งค่าไว้ จะแสดงการ์ดตัวอย่าง 8 ใบต่อค่าย
 - การเปิดเกม: แก้ `handlePlay` ใน `src/App.jsx` (`game` เป็น `null` เมื่อเข้าล็อบบี้ของค่าย)
 
