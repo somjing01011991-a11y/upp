@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import GameApp from './components/GameApp.jsx';
+import PromotionPage from './components/PromotionPage.jsx';
 import theme from './config/theme.json';
 import { web, user } from './data/session.js';
 import { fetchGames, fetchProviderTypes, fetchProviders } from './lib/api.js';
@@ -69,7 +70,7 @@ export default function App() {
       onOpenProvider={loadGames}
       onPlay={handlePlay}
     >
-      {page === 'home' ? undefined : <PlaceholderPage title={PAGE_TITLE[page]} />}
+      {page === 'home' ? undefined : page === 'promo' ? <PromotionPage /> : <PlaceholderPage title={PAGE_TITLE[page]} />}
     </GameApp>
   );
 }

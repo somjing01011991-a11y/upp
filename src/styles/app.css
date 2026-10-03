@@ -274,6 +274,40 @@
 .ta-back:hover { color: var(--c-text); border-color: var(--c-primary); }
 .ta-back svg { width: 14px; height: 14px; transform: rotate(180deg); }
 
+/* ---------- promotions ---------- */
+.ta-promo-title { margin: 0 0 12px; font-size: 20px; }
+.ta-promo-note { margin: 0; color: var(--c-muted); }
+.ta-promos { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: var(--l-gap); }
+.ta-promo {
+  display: flex; flex-direction: column; gap: 8px; padding: 8px; text-align: left; cursor: pointer;
+  background: var(--c-card); border: 1px solid var(--c-line); border-radius: var(--r-lg); color: var(--c-text);
+  transition: border-color .15s, transform .15s;
+}
+.ta-promo:hover { border-color: var(--c-primary); transform: translateY(-2px); }
+.ta-promo-cover {
+  position: relative; aspect-ratio: 1; border-radius: var(--r-md); overflow: hidden;
+  background: var(--c-raised); display: grid; place-items: center;
+}
+.ta-promo-cover img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+.ta-promo-name { font-size: 13px; font-weight: 500; line-height: 18px; }
+
+.ta-modal-backdrop {
+  position: fixed; inset: 0; z-index: 50; background: rgba(0, 0, 0, .6);
+  display: grid; place-items: center; padding: 16px;
+}
+.ta-modal {
+  width: min(520px, 100%); max-height: calc(100vh - 32px); display: flex; flex-direction: column;
+  background: var(--c-surface); border: 1px solid var(--c-line); border-radius: var(--r-lg); color: var(--c-text);
+}
+.ta-modal-head { display: flex; align-items: flex-start; gap: 12px; padding: 16px 16px 8px; }
+.ta-modal-head h3 { margin: 0; flex: 1; font-size: 17px; line-height: 24px; }
+.ta-modal-close {
+  flex: none; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: 20px; line-height: 1;
+  background: var(--c-card); border: 1px solid var(--c-line); color: var(--c-muted);
+}
+.ta-modal-close:hover { color: var(--c-text); border-color: var(--c-primary); }
+.ta-modal-body { padding: 0 16px 16px; overflow-y: auto; white-space: pre-line; color: var(--c-muted); line-height: 1.6; }
+
 /* floating buttons over a scrolled game list (above the bottom nav) */
 .ta-float {
   position: fixed; z-index: 25; right: 16px;

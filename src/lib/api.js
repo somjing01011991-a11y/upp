@@ -50,3 +50,16 @@ export async function fetchGames(provider) {
       tag: '',
     }));
 }
+
+/**
+ * Promotions: GET {API_SERVER}/member/promotion → { msg: true, data: [promotion, ...] }.
+ * Returns [] when API_SERVER is empty.
+ */
+export async function fetchPromotions() {
+  if (!API_SERVER) return [];
+  const res = await fetch(`${API_SERVER}/member/promotion`);
+  if (!res.ok) throw new Error(`Promotion API ${res.status}`);
+  const json = await res.json();
+  if (json.msg !== true) throw new Error(typeof json.msg === 'string' ? json.msg : 'Promotion API error');
+  return json.data || [];
+}

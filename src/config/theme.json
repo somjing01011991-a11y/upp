@@ -50,7 +50,12 @@
     "games": "ดูเกม",
     "back": "กลับไปหน้าค่าย",
     "loading": "กำลังโหลดเกม…",
-    "toTop": "กลับขึ้นด้านบน"
+    "toTop": "กลับขึ้นด้านบน",
+    "promotions": "โปรโมชั่น",
+    "promoLoading": "กำลังโหลดโปรโมชั่น…",
+    "promoEmpty": "ยังไม่มีโปรโมชั่น",
+    "promoError": "โหลดโปรโมชั่นไม่สำเร็จ",
+    "close": "ปิด"
   },
   "categories": [
     { "key": "slot", "label": "สล็อต", "icon": "slot", "cover": "", "sources": ["slot"], "display": "games" },

@@ -30,6 +30,7 @@ src/
     ProviderTile.jsx       ← 2. การ์ดค่าย (หมวดกีฬา หวย ฯลฯ)
     GameCard.jsx, TierBadge.jsx, Icon.jsx, Img.jsx
     BottomNav.jsx          ← 3. เมนูบาร์ล่าง
+    PromotionPage.jsx      ← หน้าโปรโมชั่น + modal รายละเอียด
   styles/tokens.css        ← design tokens
   styles/app.css           ← สไตล์คอมโพเนนต์ (อ่านค่าจากตัวแปร --c-/--r-/--l-/--f-)
   App.jsx                  ← โหลดข้อมูล, จัดการเมนู, onPlay
@@ -45,6 +46,7 @@ VITE_API_SERVER=http://127.0.0.1:7001/api
 
 - รายชื่อค่ายโหลดจาก `GET {VITE_API_SERVER}/member/gameprovider` ซึ่งคืน `{ msg: true, data: [ { provider, providerType, ... } ] }` แล้วจัดเข้าหมวดตาม `providerType` ตัวพิมพ์เล็ก (`SLOT` → `slot`, `AFB` → `afb`) ให้ตรงกับ `sources` ใน `theme.json`
 - หมวดใน Sidebar แสดงเฉพาะประเภทที่อยู่ใน `GET {VITE_API_SERVER}/member/providertype` (`{ msg: true, data: ['SLOT', 'AFB', ...] }`) ประเภทที่ไม่อยู่ในลิสต์จะไม่แสดง
+- เมนูโปรโมชั่นโหลดจาก `GET {VITE_API_SERVER}/member/promotion` แสดงรูป `media.coverImage` กับ `bonusName` คลิกแล้วเปิด modal แสดง `bonusDescription` (คงการขึ้นบรรทัดใหม่)
 - ใส่ `VITE_API_SERVER=` (ค่าว่าง) เพื่อใช้ข้อมูลตัวอย่างแทน
 - เซิร์ฟเวอร์ต้องเปิด CORS ให้ต้นทางของหน้าเว็บ (เช่น `http://localhost:5173`)
 - คลิกการ์ดค่ายแล้วโหลดรายชื่อเกมจาก `GET {VITE_API_SERVER}/member/gamelistprovider/{provider}` แสดงเฉพาะเกม `status: ACTIVE` ใช้รูป `image.square` ถ้าค่ายไม่มีเกมหรือโหลดไม่สำเร็จจะแสดงปุ่มเข้าสู่ล็อบบี้แทน
