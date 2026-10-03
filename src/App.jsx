@@ -1,6 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import GameApp from './components/GameApp.jsx';
+import ThemePicker from './components/ThemePicker.jsx';
 import theme from './config/theme.json';
+import { mergeConfig } from './theme/ThemeProvider.jsx';
+import { applyDocumentTheme, findTheme, loadThemeKey, saveThemeKey } from './theme/themes.js';
 import { web, user } from './data/session.js';
 import { fetchGames, fetchProviders } from './lib/api.js';
 import { normalizeProviders, providersFor } from './lib/providers.js';
@@ -8,11 +11,12 @@ import { normalizeProviders, providersFor } from './lib/providers.js';
 // หน้าของเมนูบาร์ที่ยังไม่ได้ทำ — แทนที่ด้วยหน้าจริง
 const PAGE_TITLE = { wallet: 'ฝากถอน', promo: 'โปรโมชั่น', profile: 'โปรไฟล์', contact: 'ติดต่อ' };
 
-function PlaceholderPage({ title }) {
+function PlaceholderPage({ title, children }) {
   return (
     <div className="ta-section" style={{ minHeight: 240 }}>
       <h2 style={{ margin: '0 0 8px', fontSize: 20 }}>{title}</h2>
       <p style={{ margin: 0, color: 'var(--c-muted)' }}>หน้านี้ยังไม่ได้เชื่อมข้อมูล</p>
+      {children}
     </div>
   );
 }
@@ -23,6 +27,14 @@ export default function App() {
   const [games, setGames] = useState({}); // { [providerCode]: Game[] | null }
   const [category, setCategory] = useState('slot');
   const [page, setPage] = useState('home');
+  const [themeKey, setThemeKey] = useState(loadThemeKey);
+
+  // ธีมที่เลือก: สีจาก config/themes/*.json ทับ theme.json + data-theme สำหรับ styles/themes/*.css
+  const config = useMemo(() => mergeConfig(theme, { colors: findTheme(themeKey).colors }), [themeKey]);
+  useEffect(() => {
+    applyDocumentTheme(themeKey);
+    saveThemeKey(themeKey);
+  }, [themeKey]);
 
   useEffect(() => {
     fetchProviders().then(setProviders).catch((e) => setError(e.message));
@@ -54,7 +66,7 @@ export default function App() {
 
   return (
     <GameApp
-      config={theme}
+      config={config}
       web={web}
       user={user}
       providers={providers}
@@ -69,7 +81,11 @@ export default function App() {
       onPlay={handlePlay}
       onViewAll={(p) => console.log('view all', p.provider)}
     >
-      {page === 'home' ? undefined : <PlaceholderPage title={PAGE_TITLE[page]} />}
+      {page === 'home' ? undefined : (
+        <PlaceholderPage title={PAGE_TITLE[page]}>
+          {page === 'profile' && <ThemePicker value={themeKey} onChange={setThemeKey} />}
+        </PlaceholderPage>
+      )}
     </GameApp>
   );
 }

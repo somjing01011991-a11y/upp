@@ -1,0 +1,27 @@
+{
+  "key": "dark-red",
+  "label": "แดงดำ",
+  "colors": {
+    "bg": "#0b0606",
+    "surface": "#140a0b",
+    "card": "#1d0f11",
+    "raised": "#2a1518",
+    "line": "#3f2125",
+    "text": "#f8f1f1",
+    "muted": "#c4a9ab",
+    "faint": "#a2878a",
+    "primary": "#ff4d4f",
+    "primaryDeep": "#c62828",
+    "onPrimary": "#1a0203",
+    "hot": "#ff9f43",
+    "onHot": "#1a0b00",
+    "positive": "#3ddc97",
+    "info": "#38c6d9",
+    "onInfo": "#04161a",
+    "focus": "#ff8a80",
+    "tierStarter": "#9a8a8c",
+    "tierVip": "#f7b733",
+    "tierVvip": "#ff7a45",
+    "tierExclusive": "#ff5c8a"
+  }
+}

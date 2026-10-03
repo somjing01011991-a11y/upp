@@ -1,0 +1,27 @@
+{
+  "key": "light",
+  "label": "สว่าง",
+  "colors": {
+    "bg": "#f3f5f9",
+    "surface": "#ffffff",
+    "card": "#ffffff",
+    "raised": "#eceff5",
+    "line": "#d7dce6",
+    "text": "#141821",
+    "muted": "#4f5a6d",
+    "faint": "#667085",
+    "primary": "#b45309",
+    "primaryDeep": "#92400e",
+    "onPrimary": "#ffffff",
+    "hot": "#dc2626",
+    "onHot": "#ffffff",
+    "positive": "#15803d",
+    "info": "#0e7490",
+    "onInfo": "#ffffff",
+    "focus": "#b45309",
+    "tierStarter": "#64748b",
+    "tierVip": "#b45309",
+    "tierVvip": "#c2410c",
+    "tierExclusive": "#a21caf"
+  }
+}

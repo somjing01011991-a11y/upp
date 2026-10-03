@@ -1,0 +1,27 @@
+{
+  "key": "dark-purple",
+  "label": "ม่วงดำ",
+  "colors": {
+    "bg": "#08060d",
+    "surface": "#110c1a",
+    "card": "#191226",
+    "raised": "#241a36",
+    "line": "#36284f",
+    "text": "#f4f1fa",
+    "muted": "#b3a8c9",
+    "faint": "#968bad",
+    "primary": "#b57bff",
+    "primaryDeep": "#8b4fd9",
+    "onPrimary": "#14061f",
+    "hot": "#ff5d8f",
+    "onHot": "#1a0510",
+    "positive": "#3ddc97",
+    "info": "#38c6d9",
+    "onInfo": "#04161a",
+    "focus": "#d4b0ff",
+    "tierStarter": "#9088a6",
+    "tierVip": "#f7b733",
+    "tierVvip": "#ff8a4c",
+    "tierExclusive": "#e86bff"
+  }
+}
