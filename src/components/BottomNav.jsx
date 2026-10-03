@@ -1,10 +1,13 @@
 import { useConfig } from '../theme/ThemeProvider.jsx';
 import Icon from './Icon.jsx';
 
-/** Zone 3 — always-visible bottom menu. Items from theme.json `nav`; `primary` = raised gold button. */
-export default function BottomNav({ active, onSelect, items, fixed = true }) {
+/**
+ * Zone 3 — always-visible bottom menu. Items from theme.json `nav`; `primary` = raised gold button.
+ * An item's `guest` ({ key, label, icon }) replaces it while the user is not logged in.
+ */
+export default function BottomNav({ active, onSelect, items, fixed = true, loggedIn = true }) {
   const cfg = useConfig();
-  const list = items || cfg.nav;
+  const list = (items || cfg.nav).map((it) => (!loggedIn && it.guest ? { ...it, ...it.guest } : it));
   return (
     <nav className={`ta-nav${fixed ? '' : ' ta-nav--static'}`} aria-label="เมนูหลัก">
       <div className="ta-nav-in" style={{ gridTemplateColumns: `repeat(${list.length}, 1fr)` }}>
