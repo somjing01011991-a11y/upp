@@ -1,0 +1,27 @@
+/* ธีมสว่าง — ใช้คู่กับ src/config/themes/light.json */
+:root[data-theme="light"] {
+  color-scheme: light;
+  --ground: #f3f5f9;
+  --surface-100: #ffffff;
+  --surface-200: #ffffff;
+  --surface-300: #eceff5;
+  --line: #d7dce6;
+  --ink: #141821;
+  --ink-muted: #4f5a6d;
+  --ink-faint: #667085;
+  --gold: #b45309;
+  --gold-deep: #92400e;
+  --on-gold: #ffffff;
+  --ember: #dc2626;
+  --on-ember: #ffffff;
+  --mint: #15803d;
+  --cyan: #0e7490;
+  --on-cyan: #ffffff;
+  --focus: #b45309;
+  --tier-starter: #64748b;
+  --tier-vvip: #c2410c;
+  --tier-exclusive: #a21caf;
+  --shadow-card: 0 6px 18px rgba(20,24,33,0.12);
+  --glow-gold: 0 0 0 1px rgba(180,83,9,0.35), 0 8px 22px rgba(180,83,9,0.20);
+  --overlay: rgba(20, 24, 33, 0.45);
+}

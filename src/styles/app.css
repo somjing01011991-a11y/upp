@@ -232,7 +232,7 @@
 .ta-game-tag--new { background: var(--c-info); color: var(--c-on-info); }
 .ta-game-play {
   position: absolute; inset: 0; display: grid; place-items: center;
-  background: rgba(7, 9, 13, .62); opacity: 0; transition: opacity .15s;
+  background: var(--overlay, rgba(7, 9, 13, .62)); opacity: 0; transition: opacity .15s;
 }
 .ta-play-btn {
   display: flex; align-items: center; gap: 4px;
@@ -316,3 +316,22 @@
 @container app (max-width: 380px) {
   .ta-user-sub span:first-child { display: none; }
 }
+
+/* ---------- theme picker ---------- */
+.ta-themes { margin-top: 20px; }
+.ta-themes-title { margin: 0 0 10px; font-size: 16px; font-weight: 600; }
+.ta-themes-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: var(--l-gap); }
+.ta-theme-opt {
+  display: flex; flex-direction: column; gap: 8px; padding: 10px; text-align: left; cursor: pointer;
+  background: var(--c-card); border: 1px solid var(--c-line); border-radius: var(--r-lg);
+  transition: border-color .15s;
+}
+.ta-theme-opt:hover { border-color: var(--c-muted); }
+.ta-theme-opt[aria-checked="true"] { border-color: var(--c-primary); box-shadow: 0 0 0 1px var(--c-primary); }
+.ta-theme-swatch {
+  display: grid; grid-template-columns: 2fr 1fr; gap: 6px; padding: 8px; height: 56px;
+  border: 1px solid; border-radius: var(--r-md);
+}
+.ta-theme-swatch span { border-radius: var(--r-sm); }
+.ta-theme-label { font-size: 13px; font-weight: 500; }
+.ta-theme-opt[aria-checked="true"] .ta-theme-label { color: var(--c-primary); }

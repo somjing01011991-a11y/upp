@@ -1,0 +1,21 @@
+/* ธีมม่วงดำ — ใช้คู่กับ src/config/themes/dark-purple.json */
+:root[data-theme="dark-purple"] {
+  color-scheme: dark;
+  --ground: #08060d;
+  --surface-100: #110c1a;
+  --surface-200: #191226;
+  --surface-300: #241a36;
+  --line: #36284f;
+  --ink: #f4f1fa;
+  --ink-muted: #b3a8c9;
+  --ink-faint: #968bad;
+  --gold: #b57bff;
+  --gold-deep: #8b4fd9;
+  --on-gold: #14061f;
+  --ember: #ff5d8f;
+  --on-ember: #1a0510;
+  --focus: #d4b0ff;
+  --shadow-card: 0 6px 18px rgba(0,0,0,0.55);
+  --glow-gold: 0 0 0 1px rgba(181,123,255,0.55), 0 8px 22px rgba(181,123,255,0.30);
+  --overlay: rgba(8, 6, 13, 0.62);
+}
