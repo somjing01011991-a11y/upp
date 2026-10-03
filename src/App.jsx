@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import GameApp from './components/GameApp.jsx';
 import theme from './config/theme.json';
 import { web, user } from './data/session.js';
-import { fetchProviderTypes, fetchProviders } from './lib/api.js';
+import { fetchGames, fetchProviderTypes, fetchProviders } from './lib/api.js';
 
 // หน้าของเมนูบาร์ที่ยังไม่ได้ทำ — แทนที่ด้วยหน้าจริง
 const PAGE_TITLE = { wallet: 'ฝากถอน', promo: 'โปรโมชั่น', profile: 'โปรไฟล์', contact: 'ติดต่อ' };
@@ -20,6 +20,7 @@ export default function App() {
   const [providers, setProviders] = useState(null);
   const [providerTypes, setProviderTypes] = useState(null); // sidebar shows only these types (null = all)
   const [error, setError] = useState('');
+  const [games, setGames] = useState({}); // { [providerCode]: Game[] | null } — missing = loading
   const [category, setCategory] = useState('slot');
   const [page, setPage] = useState('home');
 
@@ -31,6 +32,16 @@ export default function App() {
       })
       .catch((e) => setError(e.message));
   }, []);
+
+  // fetch a provider's game list when its tile is clicked (once each)
+  const requested = useRef(new Set());
+  const loadGames = (p) => {
+    if (requested.current.has(p.provider)) return;
+    requested.current.add(p.provider);
+    fetchGames(p)
+      .catch(() => [])
+      .then((list) => setGames((cur) => ({ ...cur, [p.provider]: list })));
+  };
 
   const handlePlay = (game, provider) => {
     // TODO: เรียก API เปิดเกม แล้ว window.open(url)
@@ -47,6 +58,7 @@ export default function App() {
       user={user}
       providers={providers}
       providerTypes={providerTypes}
+      games={games}
       initialCategory={category}
       onCategoryChange={(k) => {
         setCategory(k);
@@ -54,6 +66,7 @@ export default function App() {
       }}
       activeNav={page}
       onNavigate={setPage}
+      onOpenProvider={loadGames}
       onPlay={handlePlay}
     >
       {page === 'home' ? undefined : <PlaceholderPage title={PAGE_TITLE[page]} />}

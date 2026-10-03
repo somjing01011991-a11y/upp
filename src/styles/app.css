@@ -190,6 +190,10 @@
   .ta-games::-webkit-scrollbar { display: none; }
   .ta-game { scroll-snap-align: start; }
   .ta-section { padding: 12px; }
+  .ta-section--full .ta-games {
+    grid-template-columns: repeat(3, minmax(0, 1fr)); grid-auto-flow: row; grid-template-rows: none;
+    overflow: visible; scroll-snap-type: none;
+  }
 }
 
 .ta-lobby {
@@ -261,6 +265,14 @@
 .ta-ptile-name { font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .ta-ptile-cta { display: flex; align-items: center; gap: 2px; font-size: 12px; color: var(--c-primary); }
 .ta-ptile-cta svg { width: 14px; height: 14px; }
+
+.ta-back {
+  display: inline-flex; align-self: flex-start; width: fit-content; align-items: center; gap: 4px;
+  background: var(--c-card); border: 1px solid var(--c-line); border-radius: var(--r-pill);
+  color: var(--c-muted); padding: 6px 14px 6px 10px; font-size: 13px; cursor: pointer;
+}
+.ta-back:hover { color: var(--c-text); border-color: var(--c-primary); }
+.ta-back svg { width: 14px; height: 14px; transform: rotate(180deg); }
 
 /* ---------- tier badge ---------- */
 .ta-tier {

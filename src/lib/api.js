@@ -2,8 +2,6 @@ import sampleProviders from '../data/sampleProviders.js';
 
 import { API_SERVER } from '../config/api.js';
 
-const GAMES_API = import.meta.env.VITE_GAMES_API;
-
 /**
  * Provider list: GET {API_SERVER}/member/gameprovider → { msg: true, data: [provider, ...] }.
  * Uses the bundled sample when API_SERVER is empty.
@@ -33,24 +31,22 @@ export async function fetchProviderTypes() {
 }
 
 /**
- * Games of one provider → [{ gameCode, gameName, imageURL, tag }].
- * Returns null when VITE_GAMES_API is not set (the UI then shows placeholders).
- * Adjust the mapping below to the real response shape once it is known.
+ * Games of one provider: GET {API_SERVER}/member/gamelistprovider/{provider} → { msg: true, data: [game, ...] }.
+ * Returns [{ gameCode, gameName, imageURL, tag }] of ACTIVE games, or null when API_SERVER is empty
+ * (the UI then shows placeholders).
  */
 export async function fetchGames(provider) {
-  if (!GAMES_API) return null;
-  const url = GAMES_API.replace('{provider}', encodeURIComponent(provider.provider)).replace(
-    '{type}',
-    encodeURIComponent(provider.providerType),
-  );
-  const res = await fetch(url);
-  if (!res.ok) return null;
+  if (!API_SERVER) return null;
+  const res = await fetch(`${API_SERVER}/member/gamelistprovider/${encodeURIComponent(provider.provider)}`);
+  if (!res.ok) throw new Error(`Game list API ${res.status}`);
   const json = await res.json();
-  const list = Array.isArray(json) ? json : json.data || [];
-  return list.map((g) => ({
-    gameCode: g.gameCode ?? g.code ?? g.id,
-    gameName: g.gameName ?? g.name,
-    imageURL: g.imageURL ?? g.image ?? g.imgUrl ?? '',
-    tag: g.tag ?? '',
-  }));
+  if (json.msg !== true) throw new Error(typeof json.msg === 'string' ? json.msg : 'Game list API error');
+  return (json.data || [])
+    .filter((g) => g && (!g.status || g.status === 'ACTIVE'))
+    .map((g) => ({
+      gameCode: g.id,
+      gameName: g.gameName,
+      imageURL: g.image?.square || g.image?.horizontal || g.image?.vertical || '',
+      tag: '',
+    }));
 }
