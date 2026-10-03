@@ -18,6 +18,21 @@ export async function fetchProviders() {
 }
 
 /**
+ * Provider types to show in the sidebar: GET {API_SERVER}/member/providertype → { msg: true, data: ['SLOT', ...] }.
+ * Returns null (show every type) when API_SERVER is empty.
+ */
+export async function fetchProviderTypes() {
+  if (!API_SERVER) return null;
+  const res = await fetch(`${API_SERVER}/member/providertype`);
+  if (!res.ok) throw new Error(`Provider type API ${res.status}`);
+  const json = await res.json();
+  if (json.msg !== true || !Array.isArray(json.data)) {
+    throw new Error(typeof json.msg === 'string' ? json.msg : 'Provider type API error');
+  }
+  return json.data;
+}
+
+/**
  * Games of one provider → [{ gameCode, gameName, imageURL, tag }].
  * Returns null when VITE_GAMES_API is not set (the UI then shows placeholders).
  * Adjust the mapping below to the real response shape once it is known.

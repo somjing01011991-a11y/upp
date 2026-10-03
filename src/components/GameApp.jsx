@@ -11,6 +11,7 @@ function AppInner({
   web,
   user,
   providers,
+  providerTypes = null,
   initialCategory,
   activeNav = 'home',
   navFixed = true,
@@ -21,7 +22,7 @@ function AppInner({
   children,
 }) {
   const cfg = useConfig();
-  const data = useMemo(() => normalizeProviders(providers), [providers]);
+  const data = useMemo(() => normalizeProviders(providers, providerTypes), [providers, providerTypes]);
   const cats = useMemo(
     () => cfg.categories.filter((c) => providersFor(c, data).length > 0),
     [cfg.categories, data],

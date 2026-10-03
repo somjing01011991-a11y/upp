@@ -45,6 +45,7 @@ VITE_GAMES_API=https://your-api/games?provider={provider}&type={type}
 ```
 
 - รายชื่อค่ายโหลดจาก `GET {VITE_API_SERVER}/member/gameprovider` ซึ่งคืน `{ msg: true, data: [ { provider, providerType, ... } ] }` แล้วจัดเข้าหมวดตาม `providerType` ตัวพิมพ์เล็ก (`SLOT` → `slot`, `AFB` → `afb`) ให้ตรงกับ `sources` ใน `theme.json`
+- หมวดใน Sidebar แสดงเฉพาะประเภทที่อยู่ใน `GET {VITE_API_SERVER}/member/providertype` (`{ msg: true, data: ['SLOT', 'AFB', ...] }`) ประเภทที่ไม่อยู่ในลิสต์จะไม่แสดง
 - ใส่ `VITE_API_SERVER=` (ค่าว่าง) เพื่อใช้ข้อมูลตัวอย่างแทน
 - เซิร์ฟเวอร์ต้องเปิด CORS ให้ต้นทางของหน้าเว็บ (เช่น `http://localhost:5173`)
 - `VITE_GAMES_API` — ปรับการแปลงข้อมูลใน `fetchGames()` (`src/lib/api.js`) ให้ตรงกับ response จริง ผลลัพธ์ต้องเป็น `[{ gameCode, gameName, imageURL, tag }]` ถ้าไม่ได้ตั้งค่าไว้ จะแสดงการ์ดตัวอย่าง 8 ใบต่อค่าย

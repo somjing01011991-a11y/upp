@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import GameApp from './components/GameApp.jsx';
 import theme from './config/theme.json';
 import { web, user } from './data/session.js';
-import { fetchProviders } from './lib/api.js';
+import { fetchProviderTypes, fetchProviders } from './lib/api.js';
 
 // หน้าของเมนูบาร์ที่ยังไม่ได้ทำ — แทนที่ด้วยหน้าจริง
 const PAGE_TITLE = { wallet: 'ฝากถอน', promo: 'โปรโมชั่น', profile: 'โปรไฟล์', contact: 'ติดต่อ' };
@@ -18,12 +18,18 @@ function PlaceholderPage({ title }) {
 
 export default function App() {
   const [providers, setProviders] = useState(null);
+  const [providerTypes, setProviderTypes] = useState(null); // sidebar shows only these types (null = all)
   const [error, setError] = useState('');
   const [category, setCategory] = useState('slot');
   const [page, setPage] = useState('home');
 
   useEffect(() => {
-    fetchProviders().then(setProviders).catch((e) => setError(e.message));
+    Promise.all([fetchProviders(), fetchProviderTypes()])
+      .then(([list, types]) => {
+        setProviderTypes(types);
+        setProviders(list);
+      })
+      .catch((e) => setError(e.message));
   }, []);
 
   const handlePlay = (game, provider) => {
@@ -40,6 +46,7 @@ export default function App() {
       web={web}
       user={user}
       providers={providers}
+      providerTypes={providerTypes}
       initialCategory={category}
       onCategoryChange={(k) => {
         setCategory(k);
