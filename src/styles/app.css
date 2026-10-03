@@ -403,3 +403,14 @@
 @container app (max-width: 380px) {
   .ta-user-sub span:first-child { display: none; }
 }
+
+/* ---------- loading screen (shown before the theme root exists, so plain colors) ---------- */
+.ta-loading {
+  min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px;
+  background: #07090d; color: #a3acbd; font-family: "Kanit", "Noto Sans Thai", system-ui, sans-serif; font-size: 14px;
+}
+.ta-loading-spin {
+  width: 36px; height: 36px; border-radius: 50%;
+  border: 3px solid #2a3344; border-top-color: #f7b733; animation: ta-spin .8s linear infinite;
+}
+@keyframes ta-spin { to { transform: rotate(360deg); } }

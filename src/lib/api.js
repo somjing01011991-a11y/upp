@@ -63,3 +63,16 @@ export async function fetchPromotions() {
   if (json.msg !== true) throw new Error(typeof json.msg === 'string' ? json.msg : 'Promotion API error');
   return json.data || [];
 }
+
+/**
+ * Site config loaded before the page renders: GET {API_SERVER}/member/webconfig → { msg: true, data: [{ company, logo, colors }] }.
+ * Returns data[0], or null when API_SERVER is empty.
+ */
+export async function fetchWebConfig() {
+  if (!API_SERVER) return null;
+  const res = await fetch(`${API_SERVER}/member/webconfig`);
+  if (!res.ok) throw new Error(`Web config API ${res.status}`);
+  const json = await res.json();
+  if (json.msg !== true) throw new Error(typeof json.msg === 'string' ? json.msg : 'Web config API error');
+  return (Array.isArray(json.data) ? json.data[0] : json.data) || null;
+}

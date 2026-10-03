@@ -1,9 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import GameApp from './components/GameApp.jsx';
 import PromotionPage from './components/PromotionPage.jsx';
 import theme from './config/theme.json';
 import { web, user } from './data/session.js';
-import { fetchGames, fetchProviderTypes, fetchProviders } from './lib/api.js';
+import { fetchGames, fetchProviderTypes, fetchProviders, fetchWebConfig } from './lib/api.js';
 
 // หน้าของเมนูบาร์ที่ยังไม่ได้ทำ — แทนที่ด้วยหน้าจริง
 const PAGE_TITLE = { wallet: 'ฝากถอน', promo: 'โปรโมชั่น', profile: 'โปรไฟล์', contact: 'ติดต่อ' };
@@ -17,13 +17,38 @@ function PlaceholderPage({ title }) {
   );
 }
 
+function LoadingScreen() {
+  return (
+    <div className="ta-loading" role="status">
+      <span className="ta-loading-spin" />
+      กำลังโหลด…
+    </div>
+  );
+}
+
 export default function App() {
+  const [webConfig, setWebConfig] = useState(undefined); // undefined = loading, null = use built-in theme/logo
   const [providers, setProviders] = useState(null);
   const [providerTypes, setProviderTypes] = useState(null); // sidebar shows only these types (null = all)
   const [error, setError] = useState('');
   const [games, setGames] = useState({}); // { [providerCode]: Game[] | null } — missing = loading
   const [category, setCategory] = useState('slot');
   const [page, setPage] = useState('home');
+
+  // site config first (logo + colors); on failure keep the built-in theme and logo
+  useEffect(() => {
+    fetchWebConfig()
+      .catch((e) => {
+        console.warn('webconfig:', e.message);
+        return null;
+      })
+      .then(setWebConfig);
+  }, []);
+  const siteTheme = useMemo(
+    () => (webConfig?.colors ? { ...theme, colors: { ...theme.colors, ...webConfig.colors } } : theme),
+    [webConfig],
+  );
+  const siteWeb = useMemo(() => (webConfig?.logo ? { ...web, logo: webConfig.logo } : web), [webConfig]);
 
   useEffect(() => {
     Promise.all([fetchProviders(), fetchProviderTypes()])
@@ -50,12 +75,12 @@ export default function App() {
   };
 
   if (error) return <p style={{ color: '#ff5d3a', padding: 16 }}>โหลดรายชื่อค่ายไม่สำเร็จ: {error}</p>;
-  if (!providers) return null;
+  if (webConfig === undefined || !providers) return <LoadingScreen />;
 
   return (
     <GameApp
-      config={theme}
-      web={web}
+      config={siteTheme}
+      web={siteWeb}
       user={user}
       providers={providers}
       providerTypes={providerTypes}
