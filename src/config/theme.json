@@ -34,6 +34,7 @@
     "gameColumns": 4,
     "gameColumnsWide": 8,
     "gameRatio": "1 / 1",
+    "providerRatio": "4 / 3",
     "gamesPerProvider": 8
   },
   "header": { "showCredit": true, "showWallet": true, "currency": "฿" },

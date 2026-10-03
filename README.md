@@ -54,7 +54,7 @@ VITE_GAMES_API=https://your-api/games?provider={provider}&type={type}
 | `colors.*` | สีทั้งหมด → `--c-*` (เช่น `primaryDeep` → `--c-primary-deep`) |
 | `radius.*` | มุมโค้ง → `--r-*` |
 | `font.family`, `font.size` | ฟอนต์ (เปลี่ยนแล้วแก้ลิงก์ Google Fonts ใน `index.html` ด้วย) |
-| `layout.*` | ความกว้าง/สูงของส่วนต่าง ๆ, `gameColumns`, `gameColumnsWide`, `gameRatio`, `gamesPerProvider` |
+| `layout.*` | ความกว้าง/สูงของส่วนต่าง ๆ, `gameColumns`, `gameColumnsWide`, `gameRatio`, `providerRatio` (สัดส่วนรูปการ์ดค่าย), `gamesPerProvider` |
 | `header.*` | แสดง/ซ่อนเครดิต กระเป๋าเงิน, สกุลเงิน |
 | `texts.*` | ทุกคำบนปุ่ม |
 | `categories[]` | หมวดใน Sidebar: `label`, `icon`, `cover` (URL รูปปก), `sources` (คีย์ใน `data` ของ API), `display` (`games` = กดค่ายแล้วแสดงเกมของค่าย / `providers` = กดค่ายแล้วเข้าเล่นทันที) |
