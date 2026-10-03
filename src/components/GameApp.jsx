@@ -120,22 +120,24 @@ function AppInner({
 
               {open ? (
                 <>
-                  <button type="button" className="ta-back" onClick={closeProvider}>
-                    <Icon name="chevron" />
-                    {cfg.texts.back}
-                  </button>
-                  {openGames?.length > 0 && (
-                    <label className="ta-search">
-                      <Icon name="search" />
-                      <input
-                        type="search"
-                        value={query}
-                        onChange={(e) => setQuery(e.target.value)}
-                        placeholder={cfg.texts.searchGames}
-                        aria-label={cfg.texts.searchGames}
-                      />
-                    </label>
-                  )}
+                  <div className="ta-open-bar">
+                    <button type="button" className="ta-back" onClick={closeProvider}>
+                      <Icon name="chevron" />
+                      {cfg.texts.back}
+                    </button>
+                    {openGames?.length > 0 && (
+                      <label className="ta-search">
+                        <Icon name="search" />
+                        <input
+                          type="search"
+                          value={query}
+                          onChange={(e) => setQuery(e.target.value)}
+                          placeholder={cfg.texts.searchGames}
+                          aria-label={cfg.texts.searchGames}
+                        />
+                      </label>
+                    )}
+                  </div>
                   {q && shownGames?.length === 0 ? (
                     <p className="ta-search-empty">{cfg.texts.noGamesFound}</p>
                   ) : (
