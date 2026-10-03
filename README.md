@@ -1,6 +1,6 @@
 # TEST APP
 
-เว็บแอปล็อบบี้เกมโทนมืด (React 18 + Vite) แบ่ง 3 ส่วน: ส่วนบน · ส่วนกลาง (Sidebar หมวด + เนื้อหาค่ายละ 8 เกม) · เมนูบาร์ล่าง
+เว็บแอปล็อบบี้เกมโทนมืด (React 18 + Vite) แบ่ง 3 ส่วน: ส่วนบน · ส่วนกลาง (Sidebar หมวด + ค่ายเกมของหมวดที่เลือก) · เมนูบาร์ล่าง
 CSS ทั้งหมดปรับได้จาก `src/config/theme.json`
 
 ## เริ่มใช้งาน
@@ -25,8 +25,8 @@ src/
     GameApp.jsx            ← ทั้งหน้า
     AppHeader.jsx          ← 1. ส่วนบน
     CategorySidebar.jsx    ← 2. Sidebar หมวดเกม
-    ProviderSection.jsx    ← 2. ค่าย + 8 เกม (detailStatus:false = ปุ่มเข้าล็อบบี้)
-    ProviderTile.jsx       ← 2. การ์ดค่าย (หมวดกีฬา หวย ฯลฯ)
+    ProviderSection.jsx    ← 2. เกมของค่ายที่เปิด (detailStatus:false = ปุ่มเข้าล็อบบี้)
+    ProviderTile.jsx       ← 2. การ์ดค่ายในหมวดที่เลือก
     GameCard.jsx, TierBadge.jsx, Icon.jsx, Img.jsx
     BottomNav.jsx          ← 3. เมนูบาร์ล่าง
   styles/tokens.css        ← design tokens
@@ -54,8 +54,8 @@ VITE_GAMES_API=https://your-api/games?provider={provider}&type={type}
 | `colors.*` | สีทั้งหมด → `--c-*` (เช่น `primaryDeep` → `--c-primary-deep`) |
 | `radius.*` | มุมโค้ง → `--r-*` |
 | `font.family`, `font.size` | ฟอนต์ (เปลี่ยนแล้วแก้ลิงก์ Google Fonts ใน `index.html` ด้วย) |
-| `layout.*` | ความกว้าง/สูงของส่วนต่าง ๆ, `gameColumns`, `gameColumnsWide`, `gameRatio`, `gamesPerProvider` |
+| `layout.*` | ความกว้าง/สูงของส่วนต่าง ๆ, `gameColumns`, `gameColumnsWide`, `gameRatio`, `providerRatio` (สัดส่วนรูปการ์ดค่าย), `gamesPerProvider` |
 | `header.*` | แสดง/ซ่อนเครดิต กระเป๋าเงิน, สกุลเงิน |
 | `texts.*` | ทุกคำบนปุ่ม |
-| `categories[]` | หมวดใน Sidebar: `label`, `icon`, `cover` (URL รูปปก), `sources` (คีย์ใน `data` ของ API), `display` (`games` / `providers`) |
+| `categories[]` | หมวดใน Sidebar: `label`, `icon`, `cover` (URL รูปปก), `sources` (คีย์ใน `data` ของ API), `display` (`games` = กดค่ายแล้วแสดงเกมของค่าย / `providers` = กดค่ายแล้วเข้าเล่นทันที) |
 | `nav[]` | เมนูบาร์ล่าง (`primary: true` = ปุ่มกลมตรงกลาง) |

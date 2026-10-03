@@ -18,7 +18,7 @@ function ProviderLogo({ provider: p }) {
 }
 
 /** One provider with N games (layout.gamesPerProvider). detailStatus:false → lobby launch. */
-export default function ProviderSection({ provider: p = {}, games, count, onPlay, onViewAll }) {
+export default function ProviderSection({ provider: p = {}, games, count, full, onPlay, onViewAll }) {
   const { layout, texts } = useConfig();
   const n = count || layout.gamesPerProvider || 8;
   const list = (games?.length ? games : demoGames(p, n)).slice(0, n);
@@ -30,7 +30,7 @@ export default function ProviderSection({ provider: p = {}, games, count, onPlay
         <ProviderLogo provider={p} />
         <span className="ta-section-name">{p.providerName}</span>
         <TierBadge tier={p.providerTier} />
-        {!lobby && (
+        {!lobby && !full && (
           <button type="button" className="ta-viewall" onClick={() => onViewAll?.(p)}>
             {texts.viewAll}
             <Icon name="chevron" />

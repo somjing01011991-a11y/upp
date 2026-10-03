@@ -22,6 +22,7 @@ function AppInner({
   onViewAll,
   onNavigate,
   onCategoryChange,
+  onOpenProvider,
   children,
 }) {
   const cfg = useConfig();
@@ -54,8 +55,23 @@ function AppInner({
 
   const gamesOf = (p) => (getGames ? getGames(p, cat) : games?.[p.provider] ?? null);
 
+  // provider opened from the grid (games categories only) — its games replace the grid
+  const [openKey, setOpenKey] = useState(null);
+  const open = cat?.display === 'games' ? list.find((p) => p.provider === openKey) : null;
+
+  const openProvider = (p) => {
+    if (cat?.display !== 'games' || p.detailStatus === false) {
+      onPlay?.(null, p);
+      return;
+    }
+    setOpenKey(p.provider);
+    onOpenProvider?.(p, cat);
+    window.scrollTo?.({ top: 0, behavior: 'smooth' });
+  };
+
   const selectCat = (k) => {
     setCatKey(k);
+    setOpenKey(null);
     onCategoryChange?.(k);
     window.scrollTo?.({ top: 0, behavior: 'smooth' });
   };
@@ -82,16 +98,31 @@ function AppInner({
                 </div>
               )}
 
-              {cat?.display === 'providers' ? (
+              {open ? (
+                <>
+                  <button type="button" className="ta-back" onClick={() => setOpenKey(null)}>
+                    <Icon name="chevron" />
+                    {cfg.texts.back}
+                  </button>
+                  <ProviderSection
+                    provider={open}
+                    games={gamesOf(open)}
+                    count={gamesOf(open)?.length}
+                    full
+                    onPlay={onPlay}
+                  />
+                </>
+              ) : (
                 <div className="ta-ptiles">
                   {list.map((p) => (
-                    <ProviderTile key={p.provider} provider={p} onPlay={onPlay} />
+                    <ProviderTile
+                      key={p.provider}
+                      provider={p}
+                      cta={cat?.display === 'games' && p.detailStatus !== false ? cfg.texts.games : undefined}
+                      onSelect={openProvider}
+                    />
                   ))}
                 </div>
-              ) : (
-                list.map((p) => (
-                  <ProviderSection key={p.provider} provider={p} games={gamesOf(p)} onPlay={onPlay} onViewAll={onViewAll} />
-                ))
               )}
             </>
           )}
@@ -111,7 +142,8 @@ function AppInner({
 }
 
 /**
- * Whole app: header + (category sidebar | provider sections) + bottom nav.
+ * Whole app: header + (category sidebar | providers of the selected category) + bottom nav.
+ * In `display: "games"` categories a provider tile opens that provider's games.
  * `children`, when given, replaces the provider content (use it for other pages).
  */
 export default function GameApp({ config, className, ...props }) {

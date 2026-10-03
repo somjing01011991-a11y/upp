@@ -34,6 +34,7 @@
     "gameColumns": 4,
     "gameColumnsWide": 8,
     "gameRatio": "1 / 1",
+    "providerRatio": "4 / 3",
     "gamesPerProvider": 8
   },
   "header": { "showCredit": true, "showWallet": true, "currency": "฿" },
@@ -45,7 +46,9 @@
     "enter": "เข้าเล่น",
     "lobby": "เข้าสู่ล็อบบี้",
     "lobbyHint": "ค่ายนี้เข้าเล่นผ่านล็อบบี้",
-    "providers": "ค่าย"
+    "providers": "ค่าย",
+    "games": "ดูเกม",
+    "back": "กลับไปหน้าค่าย"
   },
   "categories": [
     { "key": "slot", "label": "สล็อต", "icon": "slot", "cover": "", "sources": ["slot"], "display": "games" },
