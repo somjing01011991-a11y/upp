@@ -17,6 +17,8 @@ npm run build      # ไฟล์พร้อมขึ้นเซิร์ฟ�
 src/
   config/theme.json        ← ปรับสี มุม ฟอนต์ เลย์เอาต์ ข้อความ หมวด เมนู ที่นี่
   data/session.js          ← ข้อมูลเว็บ (logo, Name) และผู้ใช้
+  data/register.js         ← BankList, Channel ของฟอร์มสมัคร
+  data/bankIcons.js        ← SVG โลโก้ธนาคาร + สีพื้น
   data/sampleProviders.js  ← ข้อมูลค่ายตัวอย่าง (ใช้เมื่อไม่ได้ตั้ง API)
   lib/api.js               ← fetchProviders / fetchGames
   lib/providers.js         ← กรอง ACTIVE, ตัดค่ายซ้ำ, จัดค่ายตามหมวด
@@ -29,6 +31,8 @@ src/
     ProviderTile.jsx       ← 2. การ์ดค่าย (หมวดกีฬา หวย ฯลฯ)
     GameCard.jsx, TierBadge.jsx, Icon.jsx, Img.jsx
     BottomNav.jsx          ← 3. เมนูบาร์ล่าง
+    RegisterForm.jsx       ← ฟอร์มสมัครสมาชิก (เปิดจากเมนู "โปรไฟล์")
+    BankIcon.jsx           ← โลโก้ธนาคาร
   styles/tokens.css        ← design tokens
   styles/app.css           ← สไตล์คอมโพเนนต์ (อ่านค่าจากตัวแปร --c-/--r-/--l-/--f-)
   App.jsx                  ← โหลดข้อมูล, จัดการเมนู, onPlay
@@ -59,3 +63,10 @@ VITE_GAMES_API=https://your-api/games?provider={provider}&type={type}
 | `texts.*` | ทุกคำบนปุ่ม |
 | `categories[]` | หมวดใน Sidebar: `label`, `icon`, `cover` (URL รูปปก), `sources` (คีย์ใน `data` ของ API), `display` (`games` / `providers`) |
 | `nav[]` | เมนูบาร์ล่าง (`primary: true` = ปุ่มกลมตรงกลาง) |
+
+## ฟอร์มสมัครสมาชิก
+
+1. กรอกเบอร์โทร → `checkPhone(phone)` ใน `src/lib/api.js` คืน `false` = แสดง "เบอร์นี้ถูกใช้งานแล้ว", `true` = ไปขั้นถัดไป
+2. กรอก ชื่อ, นามสกุล, ธนาคาร, เลขบัญชี, ช่องทางที่รู้จัก → `register(form)`
+
+ตอนนี้ทั้งสองฟังก์ชันเป็น mock: เบอร์ `0812345678` และ `0899999999` ถือว่าซ้ำ เบอร์อื่นผ่าน — แก้ในฟังก์ชันเพื่อเรียก API จริง

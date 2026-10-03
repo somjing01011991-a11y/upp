@@ -35,3 +35,22 @@ export async function fetchGames(provider) {
     tag: g.tag ?? '',
   }));
 }
+
+// เบอร์ที่ถือว่าถูกใช้งานแล้ว (mock) — ลองกรอก 0812345678 เพื่อดูกรณีเบอร์ซ้ำ
+const USED_PHONES = ['0812345678', '0899999999'];
+
+/**
+ * ตรวจเบอร์โทรก่อนสมัคร: true = ใช้สมัครได้, false = เบอร์ถูกใช้งานแล้ว
+ * ตอนนี้เป็น mock — เปลี่ยนเป็นเรียก API จริงที่นี่
+ */
+export async function checkPhone(phone) {
+  await new Promise((r) => setTimeout(r, 400));
+  return !USED_PHONES.includes(phone);
+}
+
+/** ส่งข้อมูลสมัครสมาชิก (mock) — เปลี่ยนเป็นเรียก API จริงที่นี่ */
+export async function register(form) {
+  await new Promise((r) => setTimeout(r, 400));
+  console.log('register', form);
+  return true;
+}
