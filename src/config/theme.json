@@ -49,7 +49,8 @@
     "providers": "ค่าย",
     "games": "ดูเกม",
     "back": "กลับไปหน้าค่าย",
-    "loading": "กำลังโหลดเกม…"
+    "loading": "กำลังโหลดเกม…",
+    "toTop": "กลับขึ้นด้านบน"
   },
   "categories": [
     { "key": "slot", "label": "สล็อต", "icon": "slot", "cover": "", "sources": ["slot"], "display": "games" },

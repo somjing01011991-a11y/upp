@@ -274,6 +274,24 @@
 .ta-back:hover { color: var(--c-text); border-color: var(--c-primary); }
 .ta-back svg { width: 14px; height: 14px; transform: rotate(180deg); }
 
+/* floating buttons over a scrolled game list (above the bottom nav) */
+.ta-float {
+  position: fixed; z-index: 25; right: 16px;
+  bottom: calc(var(--l-nav-height) + env(safe-area-inset-bottom, 0px) + 16px);
+  display: flex; align-items: center; gap: 8px;
+}
+.ta-float button {
+  display: inline-flex; align-items: center; justify-content: center; gap: 4px; cursor: pointer;
+  background: var(--c-card); border: 1px solid var(--c-line); color: var(--c-text);
+  box-shadow: var(--shadow-card, 0 6px 18px rgba(0,0,0,.45));
+}
+.ta-float button:hover { border-color: var(--c-primary); }
+.ta-float-back { border-radius: var(--r-pill); padding: 10px 16px 10px 12px; font-size: 13px; }
+.ta-float-back svg { width: 14px; height: 14px; transform: rotate(180deg); }
+.ta-float-top { width: 44px; height: 44px; border-radius: 50%; }
+.ta-float .ta-float-top { background: var(--c-primary); color: var(--c-on-primary); border-color: var(--c-primary); }
+.ta-float-top svg { width: 20px; height: 20px; transform: rotate(-90deg); }
+
 /* ---------- tier badge ---------- */
 .ta-tier {
   flex: none; display: inline-block;

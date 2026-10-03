@@ -66,6 +66,22 @@ function AppInner({
     window.scrollTo?.({ top: 0, behavior: 'smooth' });
   };
 
+  // floating "back to providers" + "scroll to top" buttons once the game list is scrolled down
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    if (!openKey) return undefined;
+    const onScroll = () => setScrolled(window.scrollY > 300);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, [openKey]);
+
+  const toTop = () => window.scrollTo?.({ top: 0, behavior: 'smooth' });
+  const closeProvider = () => {
+    setOpenKey(null);
+    toTop();
+  };
+
   const selectCat = (k) => {
     setCatKey(k);
     setOpenKey(null);
@@ -97,11 +113,22 @@ function AppInner({
 
               {open ? (
                 <>
-                  <button type="button" className="ta-back" onClick={() => setOpenKey(null)}>
+                  <button type="button" className="ta-back" onClick={closeProvider}>
                     <Icon name="chevron" />
                     {cfg.texts.back}
                   </button>
                   <ProviderSection provider={open} games={games?.[open.provider]} full onPlay={onPlay} />
+                  {scrolled && (
+                    <div className="ta-float">
+                      <button type="button" className="ta-float-back" onClick={closeProvider}>
+                        <Icon name="chevron" />
+                        {cfg.texts.back}
+                      </button>
+                      <button type="button" className="ta-float-top" onClick={toTop} aria-label={cfg.texts.toTop}>
+                        <Icon name="chevron" />
+                      </button>
+                    </div>
+                  )}
                 </>
               ) : (
                 <div className="ta-ptiles">
