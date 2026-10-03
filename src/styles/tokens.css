@@ -1,0 +1,42 @@
+/* Design tokens — generated from the TEST APP design system (tokens.json). */
+:root {
+  --ground: #07090d;
+  --surface-100: #0f131b;
+  --surface-200: #161b26;
+  --surface-300: #1f2634;
+  --line: #2a3344;
+  --ink: #f3f5f9;
+  --ink-muted: #a3acbd;
+  --ink-faint: #8a95a8;
+  --gold: #f7b733;
+  --gold-deep: #c98a12;
+  --on-gold: #1b1300;
+  --ember: #ff5d3a;
+  --on-ember: #1a0700;
+  --mint: #3ddc97;
+  --cyan: #38c6d9;
+  --on-cyan: #04161a;
+  --focus: #ffd166;
+  --tier-starter: #8b97ad;
+  --tier-vip: var(--gold);
+  --tier-vvip: #ff8a4c;
+  --tier-exclusive: #e86bff;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-pill: 999px;
+  --shadow-card: 0 6px 18px rgba(0,0,0,0.45);
+  --glow-gold: 0 0 0 1px rgba(247,183,51,0.55), 0 8px 22px rgba(247,183,51,0.28);
+  --layout-max-width: 1280px;
+  --layout-header-height: 64px;
+  --layout-sidebar-width: 104px;
+  --layout-nav-height: 64px;
+  --font-sans: "Kanit", "Noto Sans Thai", system-ui, sans-serif;
+}
+
+html, body { margin: 0; background: var(--ground); }

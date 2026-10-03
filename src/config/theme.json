@@ -1,0 +1,69 @@
+{
+  "colors": {
+    "bg": "#07090d",
+    "surface": "#0f131b",
+    "card": "#161b26",
+    "raised": "#1f2634",
+    "line": "#2a3344",
+    "text": "#f3f5f9",
+    "muted": "#a3acbd",
+    "faint": "#8a95a8",
+    "primary": "#f7b733",
+    "primaryDeep": "#c98a12",
+    "onPrimary": "#1b1300",
+    "hot": "#ff5d3a",
+    "onHot": "#1a0700",
+    "positive": "#3ddc97",
+    "info": "#38c6d9",
+    "onInfo": "#04161a",
+    "focus": "#ffd166",
+    "tierStarter": "#8b97ad",
+    "tierVip": "#f7b733",
+    "tierVvip": "#ff8a4c",
+    "tierExclusive": "#e86bff"
+  },
+  "radius": { "sm": "6px", "md": "10px", "lg": "16px", "pill": "999px" },
+  "font": { "family": "\"Kanit\", \"Noto Sans Thai\", system-ui, sans-serif", "size": "14px" },
+  "layout": {
+    "maxWidth": "1280px",
+    "headerHeight": "64px",
+    "sidebarWidth": "104px",
+    "sidebarWidthMobile": "76px",
+    "navHeight": "64px",
+    "gap": "12px",
+    "gameColumns": 4,
+    "gameColumnsWide": 8,
+    "gameRatio": "1 / 1",
+    "gamesPerProvider": 8
+  },
+  "header": { "showCredit": true, "showWallet": true, "currency": "฿" },
+  "texts": {
+    "credit": "เครดิต",
+    "wallet": "กระเป๋าเงิน",
+    "viewAll": "ดูทั้งหมด",
+    "play": "เล่นเลย",
+    "enter": "เข้าเล่น",
+    "lobby": "เข้าสู่ล็อบบี้",
+    "lobbyHint": "ค่ายนี้เข้าเล่นผ่านล็อบบี้",
+    "providers": "ค่าย"
+  },
+  "categories": [
+    { "key": "slot", "label": "สล็อต", "icon": "slot", "cover": "", "sources": ["slot"], "display": "games" },
+    { "key": "casino", "label": "คาสิโนสด", "icon": "casino", "cover": "", "sources": ["casino"], "display": "games" },
+    { "key": "card", "label": "เกมไพ่", "icon": "card", "cover": "", "sources": ["card"], "display": "games" },
+    { "key": "fish", "label": "ยิงปลา", "icon": "fish", "cover": "", "sources": ["fish"], "display": "games" },
+    { "key": "sport", "label": "กีฬา", "icon": "sport", "cover": "", "sources": ["afb", "sbo", "saba", "ufa", "umb", "fbs", "dbs", "wss", "m8", "obx", "vsb"], "display": "providers" },
+    { "key": "lotto", "label": "หวย", "icon": "lotto", "cover": "", "sources": ["aml", "lali", "keno"], "display": "providers" },
+    { "key": "poker", "label": "โป๊กเกอร์", "icon": "poker", "cover": "", "sources": ["poker"], "display": "providers" },
+    { "key": "cock", "label": "ไก่ชน", "icon": "cock", "cover": "", "sources": ["cock"], "display": "providers" },
+    { "key": "esport", "label": "อีสปอร์ต", "icon": "esport", "cover": "", "sources": ["esport"], "display": "providers" },
+    { "key": "trade", "label": "เทรด", "icon": "trade", "cover": "", "sources": ["trade"], "display": "providers" }
+  ],
+  "nav": [
+    { "key": "wallet", "label": "ฝากถอน", "icon": "wallet" },
+    { "key": "promo", "label": "โปรโมชั่น", "icon": "gift" },
+    { "key": "home", "label": "หน้าแรก", "icon": "home", "primary": true },
+    { "key": "profile", "label": "โปรไฟล์", "icon": "user" },
+    { "key": "contact", "label": "ติดต่อ", "icon": "chat" }
+  ]
+}
