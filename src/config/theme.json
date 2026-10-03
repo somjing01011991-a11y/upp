@@ -45,7 +45,8 @@
     "enter": "เข้าเล่น",
     "lobby": "เข้าสู่ล็อบบี้",
     "lobbyHint": "ค่ายนี้เข้าเล่นผ่านล็อบบี้",
-    "providers": "ค่าย"
+    "providers": "ค่าย",
+    "login": "เข้าสู่ระบบ"
   },
   "categories": [
     { "key": "slot", "label": "สล็อต", "icon": "slot", "cover": "", "sources": ["slot"], "display": "games" },
@@ -63,7 +64,7 @@
     { "key": "wallet", "label": "ฝากถอน", "icon": "wallet" },
     { "key": "promo", "label": "โปรโมชั่น", "icon": "gift" },
     { "key": "home", "label": "หน้าแรก", "icon": "home", "primary": true },
-    { "key": "profile", "label": "โปรไฟล์", "icon": "user" },
+    { "key": "profile", "label": "โปรไฟล์", "icon": "user", "guest": { "key": "register", "label": "สมัครสมาชิก" } },
     { "key": "contact", "label": "ติดต่อ", "icon": "chat" }
   ]
 }

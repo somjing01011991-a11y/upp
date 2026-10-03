@@ -22,6 +22,7 @@ function AppInner({
   onViewAll,
   onNavigate,
   onCategoryChange,
+  onLogin,
   children,
 }) {
   const cfg = useConfig();
@@ -62,7 +63,7 @@ function AppInner({
 
   return (
     <div className="ta-app" ref={rootRef}>
-      <AppHeader ref={headerRef} web={web} user={user} />
+      <AppHeader ref={headerRef} web={web} user={user} onLogin={onLogin} />
 
       <div className="ta-body">
         <CategorySidebar active={cat?.key} onSelect={selectCat} categories={cats} counts={counts} />
@@ -101,6 +102,7 @@ function AppInner({
       <BottomNav
         active={navKey}
         fixed={navFixed}
+        loggedIn={!!user}
         onSelect={(k) => {
           setNavKey(k);
           onNavigate?.(k);

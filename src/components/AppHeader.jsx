@@ -25,11 +25,28 @@ function Logo({ logo, name = '' }) {
   return <span className="ta-logo ta-logo--mono">{monoEl}</span>;
 }
 
-/** Zone 1 — logo + site name, credit / wallet, user card. */
-const AppHeader = forwardRef(function AppHeader({ web = {}, user = {}, homeHref = '#', onBrandClick }, ref) {
+/** Zone 1 — logo + site name, credit / wallet, user card. No `user` = guest: shows a login button instead. */
+const AppHeader = forwardRef(function AppHeader({ web = {}, user, homeHref = '#', onBrandClick, onLogin }, ref) {
   const { header, texts } = useConfig();
   const cur = header.currency || '';
   const name = web.Name || web.name;
+
+  if (!user) {
+    return (
+      <header className="ta-header" ref={ref}>
+        <div className="ta-header-in">
+          <a className="ta-brand" href={homeHref} onClick={onBrandClick}>
+            <Logo logo={web.logo} name={name} />
+            <span className="ta-brand-name">{name}</span>
+          </a>
+          <button type="button" className="ta-btn ta-login" onClick={onLogin}>
+            {texts.login}
+          </button>
+        </div>
+      </header>
+    );
+  }
+
   const initial = (user.name || user.username || '?').trim().charAt(0);
 
   return (
