@@ -44,7 +44,7 @@ src/
 VITE_API_SERVER=http://127.0.0.1:7001/api
 ```
 
-- ก่อนเปิดหน้า โหลด `GET {VITE_API_SERVER}/member/webconfig` แล้วใช้ `data[0].logo` เป็นโลโก้ และ `data[0].colors` ทับสีใน `theme.json` (ชื่อคีย์เดียวกัน) ถ้าโหลดไม่สำเร็จใช้ธีมและโลโก้เดิม
+- ก่อนเปิดหน้า โหลด `GET {VITE_API_SERVER}/member/webconfig` แล้วใช้ `data[0].logo` เป็นโลโก้, `data[0].company` เป็นชื่อเว็บข้างโลโก้ และ `data[0].colors` ทับสีใน `theme.json` (ชื่อคีย์เดียวกัน) ถ้าโหลดไม่สำเร็จใช้ธีมและโลโก้เดิม
 - รายชื่อค่ายโหลดจาก `GET {VITE_API_SERVER}/member/gameprovider` ซึ่งคืน `{ msg: true, data: [ { provider, providerType, ... } ] }` แล้วจัดเข้าหมวดตาม `providerType` ตัวพิมพ์เล็ก (`SLOT` → `slot`, `AFB` → `afb`) ให้ตรงกับ `sources` ใน `theme.json`
 - หมวดใน Sidebar แสดงเฉพาะประเภทที่อยู่ใน `GET {VITE_API_SERVER}/member/providertype` (`{ msg: true, data: ['SLOT', 'AFB', ...] }`) ประเภทที่ไม่อยู่ในลิสต์จะไม่แสดง
 - เมนูโปรโมชั่นโหลดจาก `GET {VITE_API_SERVER}/member/promotion` แสดงรูป `media.coverImage` กับ `bonusName` คลิกแล้วเปิด modal แสดง `bonusDescription` (คงการขึ้นบรรทัดใหม่)

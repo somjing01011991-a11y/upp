@@ -48,7 +48,14 @@ export default function App() {
     () => (webConfig?.colors ? { ...theme, colors: { ...theme.colors, ...webConfig.colors } } : theme),
     [webConfig],
   );
-  const siteWeb = useMemo(() => (webConfig?.logo ? { ...web, logo: webConfig.logo } : web), [webConfig]);
+  const siteWeb = useMemo(
+    () => ({
+      ...web,
+      ...(webConfig?.logo ? { logo: webConfig.logo } : null),
+      ...(webConfig?.company ? { Name: webConfig.company } : null),
+    }),
+    [webConfig],
+  );
 
   useEffect(() => {
     Promise.all([fetchProviders(), fetchProviderTypes()])
