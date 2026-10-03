@@ -260,6 +260,14 @@
 .ta-ptile-cta { display: flex; align-items: center; gap: 2px; font-size: 12px; color: var(--c-primary); }
 .ta-ptile-cta svg { width: 14px; height: 14px; }
 
+.ta-back {
+  display: inline-flex; align-self: flex-start; width: fit-content; align-items: center; gap: 4px;
+  background: var(--c-card); border: 1px solid var(--c-line); border-radius: var(--r-pill);
+  color: var(--c-muted); padding: 6px 14px 6px 10px; font-size: 13px; cursor: pointer;
+}
+.ta-back:hover { color: var(--c-text); border-color: var(--c-primary); }
+.ta-back svg { width: 14px; height: 14px; transform: rotate(180deg); }
+
 /* ---------- tier badge ---------- */
 .ta-tier {
   flex: none; display: inline-block;
