@@ -80,4 +80,4 @@ VITE_API_SERVER=http://127.0.0.1:7001/api
 2. กรอก ชื่อ, นามสกุล, ธนาคาร, เลขบัญชี (10–16 หลัก), ช่องทางที่รู้จัก, LINE ID (ไม่บังคับ), รหัสผ่าน และยืนยันรหัสผ่าน (ต้องตรงกัน 6–20 ตัวอักษร)
    → `POST /member/register` `{ PhoneNumber, Fname, Lname, Channel, Password, LineId, BankCode, AccNumber }`
 3. ได้ `{ register: true, data }` → เก็บ `data` เป็น session เข้าสู่ระบบทันที (เหมือน login) แล้วกลับหน้าแรก;
-   `{ register: false }` → แสดง `msg` หรือ "สมัครสมาชิกไม่สำเร็จ"
+   พร้อมเด้ง modal "สมัครสมาชิกสำเร็จ — ยินดีต้อนรับสู่ {company}"; `{ register: false }` → แสดง `msg` หรือ "สมัครสมาชิกไม่สำเร็จ"

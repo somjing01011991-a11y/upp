@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import GameApp from './components/GameApp.jsx';
 import LoginModal from './components/LoginModal.jsx';
+import WelcomeModal from './components/WelcomeModal.jsx';
 import PromotionPage from './components/PromotionPage.jsx';
 import RegisterForm from './components/RegisterForm.jsx';
 import theme from './config/theme.json';
@@ -39,6 +40,7 @@ export default function App() {
   const [page, setPage] = useState('home');
   const [member, setMember] = useState(loadSession); // login response kept in sessionStorage; null = guest
   const [loginOpen, setLoginOpen] = useState(false);
+  const [welcomeOpen, setWelcomeOpen] = useState(false); // signup success popup
   const user = useMemo(() => toHeaderUser(member), [member]);
 
   const onLoggedIn = (res) => {
@@ -50,6 +52,7 @@ export default function App() {
   const registered = (data) => {
     onLoggedIn(data);
     setPage('home');
+    setWelcomeOpen(true);
   };
   const logout = () => {
     clearSession();
@@ -138,7 +141,9 @@ export default function App() {
       onLogin={() => setLoginOpen(true)}
       onLogout={logout}
       overlay={
-        loginOpen && (
+        welcomeOpen ? (
+          <WelcomeModal siteName={siteWeb.Name} onClose={() => setWelcomeOpen(false)} />
+        ) : loginOpen && (
           <LoginModal
             onSuccess={onLoggedIn}
             onClose={() => setLoginOpen(false)}

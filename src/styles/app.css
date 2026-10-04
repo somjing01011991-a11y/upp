@@ -535,3 +535,13 @@
 .ta-bsel-opt { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: var(--r-sm); cursor: pointer; }
 .ta-bsel-opt.is-hi { background: var(--c-raised); }
 .ta-bsel-opt.is-on .ta-bsel-name { color: var(--c-primary); font-weight: 600; }
+
+/* signup success */
+.ta-welcome-modal { width: min(360px, 100%); padding: 28px 20px 20px; text-align: center; display: flex; flex-direction: column; align-items: stretch; gap: 10px; }
+.ta-welcome-modal h3 { margin: 0; font-size: 20px; }
+.ta-welcome-modal p { margin: 0 0 8px; color: var(--c-muted); }
+.ta-welcome-modal p b { color: var(--c-text); }
+.ta-welcome-check {
+  align-self: center; width: 56px; height: 56px; border-radius: 50%; display: grid; place-items: center;
+  font-size: 30px; font-weight: 700; color: #fff; background: var(--c-primary);
+}
