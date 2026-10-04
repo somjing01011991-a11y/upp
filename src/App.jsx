@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import GameApp from './components/GameApp.jsx';
 import LoginModal from './components/LoginModal.jsx';
 import PromotionPage from './components/PromotionPage.jsx';
+import RegisterForm from './components/RegisterForm.jsx';
 import theme from './config/theme.json';
 import { web } from './data/session.js';
 import { clearSession, loadSession, saveSession, toHeaderUser } from './lib/session.js';
@@ -131,11 +132,22 @@ export default function App() {
       onNavigate={navigate}
       onLogin={() => setLoginOpen(true)}
       onLogout={logout}
-      overlay={loginOpen && <LoginModal onSuccess={onLoggedIn} onClose={() => setLoginOpen(false)} />}
+      overlay={
+        loginOpen && (
+          <LoginModal
+            onSuccess={onLoggedIn}
+            onClose={() => setLoginOpen(false)}
+            onRegister={() => {
+              setLoginOpen(false);
+              setPage('signup');
+            }}
+          />
+        )
+      }
       onOpenProvider={loadGames}
       onPlay={handlePlay}
     >
-      {page === 'home' ? undefined : page === 'promo' ? <PromotionPage /> : <PlaceholderPage title={PAGE_TITLE[page]} />}
+      {page === 'home' ? undefined : page === 'promo' ? <PromotionPage /> : page === 'signup' ? <RegisterForm /> : <PlaceholderPage title={PAGE_TITLE[page]} />}
     </GameApp>
   );
 }

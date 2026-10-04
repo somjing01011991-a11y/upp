@@ -4,7 +4,7 @@ import { login } from '../lib/api.js';
 import Spinner from './Spinner.jsx';
 
 /** Login modal: PhoneNumber + Password → POST /member/login. Shows the API's `msg` when login fails. */
-export default function LoginModal({ onSuccess, onClose }) {
+export default function LoginModal({ onSuccess, onClose, onRegister }) {
   const { texts } = useConfig();
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
@@ -87,6 +87,14 @@ export default function LoginModal({ onSuccess, onClose }) {
               texts.login
             )}
           </button>
+          {onRegister && (
+            <p className="ta-login-switch">
+              {texts.noAccount}{' '}
+              <button type="button" className="ta-link" onClick={onRegister}>
+                {texts.register}
+              </button>
+            </p>
+          )}
         </div>
       </form>
     </div>
