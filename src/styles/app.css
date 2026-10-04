@@ -263,8 +263,9 @@
 .ta-ptile-cover img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: fill; display: block; }
 /* full provider name (wraps, never cut off) */
 .ta-ptile-name { font-weight: 500; line-height: 20px; overflow-wrap: anywhere; }
-/* tier badge row; keeps its height when a provider has no tier so cards line up */
-.ta-ptile-tier { display: flex; align-items: center; min-height: 20px; margin-top: auto; }
+/* tier badge over the cover's top-left corner */
+.ta-ptile-tier { position: absolute; top: 6px; left: 6px; z-index: 1; display: flex; }
+.ta-ptile-tier .ta-tier { background: rgba(0, 0, 0, .65); backdrop-filter: blur(2px); }
 
 .ta-back {
   display: inline-flex; align-self: flex-start; width: fit-content; align-items: center; gap: 4px;
