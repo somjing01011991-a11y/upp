@@ -3,6 +3,7 @@ import { demoGames } from '../lib/providers.js';
 import GameCard from './GameCard.jsx';
 import Icon from './Icon.jsx';
 import Img from './Img.jsx';
+import Spinner from './Spinner.jsx';
 import TierBadge from './TierBadge.jsx';
 
 function ProviderLogo({ provider: p }) {
@@ -43,7 +44,7 @@ export default function ProviderSection({ provider: p = {}, games, count, full, 
       </div>
 
       {loading ? (
-        <div className="ta-lobby">{texts.loading}</div>
+        <Spinner block label={texts.loading} />
       ) : lobby ? (
         <div className="ta-lobby">
           <span>{texts.lobbyHint}</span>

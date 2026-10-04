@@ -432,8 +432,22 @@
   margin: 0; padding: 8px 12px; font-size: 13px; color: var(--c-hot);
   background: color-mix(in srgb, var(--c-hot) 12%, transparent); border-radius: var(--r-md);
 }
-.ta-login-submit { height: 44px; font-size: 15px; margin-top: 4px; }
+.ta-login-submit { height: 44px; font-size: 15px; margin-top: 4px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
 .ta-login-submit:disabled { opacity: .6; cursor: default; }
+
+/* ---------- spinner (every API wait) ---------- */
+.ta-spinner {
+  display: inline-block; flex: none; width: 28px; height: 28px; border-radius: 50%;
+  border: 3px solid color-mix(in srgb, currentColor 25%, transparent); border-top-color: currentColor;
+  animation: ta-spin .8s linear infinite;
+}
+.ta-spinner-block {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
+  padding: 40px 0; color: var(--c-muted); font-size: 14px;
+}
+.ta-spinner-block .ta-spinner { color: var(--c-primary); }
+.ta-spinner-inline { display: inline-flex; align-items: center; gap: 8px; }
+.ta-login-submit .ta-spinner { border-width: 2px; }
 
 /* ---------- loading screen (shown before the theme root exists, so plain colors) ---------- */
 .ta-loading {

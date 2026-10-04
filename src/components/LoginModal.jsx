@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useConfig } from '../theme/ThemeProvider.jsx';
 import { login } from '../lib/api.js';
+import Spinner from './Spinner.jsx';
 
 /** Login modal: PhoneNumber + Password → POST /member/login. Shows the API's `msg` when login fails. */
 export default function LoginModal({ onSuccess, onClose }) {
@@ -77,7 +78,14 @@ export default function LoginModal({ onSuccess, onClose }) {
             </p>
           )}
           <button type="submit" className="ta-btn ta-login-submit" disabled={busy}>
-            {busy ? texts.loggingIn : texts.login}
+            {busy ? (
+              <>
+                <Spinner size={18} />
+                {texts.loggingIn}
+              </>
+            ) : (
+              texts.login
+            )}
           </button>
         </div>
       </form>

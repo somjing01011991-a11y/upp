@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { useConfig } from '../theme/ThemeProvider.jsx';
 import { fetchPromotions } from '../lib/api.js';
 import Img from './Img.jsx';
+import Spinner from './Spinner.jsx';
 
 /** Promotion modal: bonusName + bonusDescription (line breaks kept). Esc / backdrop / × closes. */
 function PromotionModal({ promo, container, onClose }) {
@@ -56,7 +57,7 @@ export default function PromotionPage() {
       {error ? (
         <p className="ta-promo-note">{texts.promoError}: {error}</p>
       ) : !list ? (
-        <p className="ta-promo-note">{texts.promoLoading}</p>
+        <Spinner block label={texts.promoLoading} />
       ) : list.length === 0 ? (
         <p className="ta-promo-note">{texts.promoEmpty}</p>
       ) : (
