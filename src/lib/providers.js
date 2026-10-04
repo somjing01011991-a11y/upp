@@ -30,33 +30,6 @@ function groupByType(list) {
   return out;
 }
 
-/**
- * One sidebar entry per provider type, in the provider-type API's order.
- * Icon / cover come from the theme.json category that lists the type in `sources`; the label is that
- * category's label when it holds only this type, else the provider's name when the type has one provider,
- * else the type code. Types without providers are dropped.
- */
-export function categoriesFromTypes(types, categories, data) {
-  const seen = new Set();
-  const out = [];
-  for (const t of types || []) {
-    const key = String(t).toLowerCase();
-    if (seen.has(key) || !(data[key] || []).length) continue;
-    seen.add(key);
-    const group = categories.find((c) => (c.sources || [c.key]).includes(key));
-    const own = group && (group.sources || [group.key]).length === 1;
-    const list = data[key];
-    out.push({
-      key,
-      label: own ? group.label : list.length === 1 ? list[0].providerName : String(t).toUpperCase(),
-      icon: group?.icon || key,
-      cover: own ? group.cover : '',
-      sources: [key],
-    });
-  }
-  return out;
-}
-
 /** All providers of a sidebar category (joins every API key listed in `category.sources`). */
 export function providersFor(category, data) {
   const seen = new Set();

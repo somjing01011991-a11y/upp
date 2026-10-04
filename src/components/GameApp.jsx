@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { ThemeProvider, useConfig } from '../theme/ThemeProvider.jsx';
-import { categoriesFromTypes, normalizeProviders, providersFor } from '../lib/providers.js';
+import { normalizeProviders, providersFor } from '../lib/providers.js';
 import AppHeader from './AppHeader.jsx';
 import BottomNav from './BottomNav.jsx';
 import CategorySidebar from './CategorySidebar.jsx';
@@ -26,13 +26,9 @@ function AppInner({
 }) {
   const cfg = useConfig();
   const data = useMemo(() => normalizeProviders(providers, providerTypes), [providers, providerTypes]);
-  // with the provider-type API: one entry per type in its order; without it: theme.json categories
   const cats = useMemo(
-    () =>
-      providerTypes
-        ? categoriesFromTypes(providerTypes, cfg.categories, data)
-        : cfg.categories.filter((c) => providersFor(c, data).length > 0),
-    [providerTypes, cfg.categories, data],
+    () => cfg.categories.filter((c) => providersFor(c, data).length > 0),
+    [cfg.categories, data],
   );
 
   const [catKey, setCatKey] = useState(initialCategory);
