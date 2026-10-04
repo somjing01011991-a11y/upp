@@ -119,9 +119,18 @@ function AppInner({
                     <Icon name={cat.icon || cat.key} />
                   </span>
                   <h2>{cat.label}</h2>
-                  <span className="ta-cat-head-count">
-                    {list.length} {cfg.texts.providers}
-                  </span>
+                  {/* in a game list: number of games shown (after search); otherwise number of providers */}
+                  {open ? (
+                    shownGames && (
+                      <span className="ta-cat-head-count">
+                        {shownGames.length} {cfg.texts.gamesUnit}
+                      </span>
+                    )
+                  ) : (
+                    <span className="ta-cat-head-count">
+                      {list.length} {cfg.texts.providers}
+                    </span>
+                  )}
                 </div>
               )}
 
