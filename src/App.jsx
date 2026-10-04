@@ -46,6 +46,11 @@ export default function App() {
     setMember(res);
     setLoginOpen(false);
   };
+  // signup response data has the same shape as a login, so the new member is logged in right away
+  const registered = (data) => {
+    onLoggedIn(data);
+    setPage('home');
+  };
   const logout = () => {
     clearSession();
     setMember(null);
@@ -147,7 +152,7 @@ export default function App() {
       onOpenProvider={loadGames}
       onPlay={handlePlay}
     >
-      {page === 'home' ? undefined : page === 'promo' ? <PromotionPage /> : page === 'signup' ? <RegisterForm /> : <PlaceholderPage title={PAGE_TITLE[page]} />}
+      {page === 'home' ? undefined : page === 'promo' ? <PromotionPage /> : page === 'signup' ? <RegisterForm onRegistered={registered} /> : <PlaceholderPage title={PAGE_TITLE[page]} />}
     </GameApp>
   );
 }

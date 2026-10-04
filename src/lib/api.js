@@ -92,21 +92,33 @@ export async function login(PhoneNumber, Password) {
   return json;
 }
 
-// เบอร์ที่ถือว่าถูกใช้งานแล้ว (mock) — ลองกรอก 0812345678 เพื่อดูกรณีเบอร์ซ้ำ
-const USED_PHONES = ['0812345678', '0899999999'];
-
 /**
- * ตรวจเบอร์โทรก่อนสมัคร: true = ใช้สมัครได้, false = เบอร์ถูกใช้งานแล้ว
- * ตอนนี้เป็น mock — เปลี่ยนเป็นเรียก API จริงที่นี่
+ * Phone check before signup: POST {API_SERVER}/member/checkphonenumber with { PhoneNumber }.
+ * Response { verify: true } = not registered yet; false = already used.
  */
-export async function checkPhone(phone) {
-  await new Promise((r) => setTimeout(r, 400));
-  return !USED_PHONES.includes(phone);
+export async function checkPhone(PhoneNumber) {
+  const res = await fetch(`${API_SERVER}/member/checkphonenumber`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ PhoneNumber }),
+  });
+  const json = await res.json().catch(() => null);
+  if (!json || typeof json.verify !== 'boolean') throw new Error(`Check phone API ${res.status}`);
+  return json.verify;
 }
 
-/** ส่งข้อมูลสมัครสมาชิก (mock) — เปลี่ยนเป็นเรียก API จริงที่นี่ */
-export async function register(form) {
-  await new Promise((r) => setTimeout(r, 400));
-  console.log('register', form);
-  return true;
+/**
+ * Signup: POST {API_SERVER}/member/register with
+ * { PhoneNumber, Fname, Lname, Channel, Password, LineId, BankCode, AccNumber }.
+ * Resolves to the response — { register: true, data: { Username, …, accesstoken } } or { register: false, msg? }.
+ */
+export async function register(body) {
+  const res = await fetch(`${API_SERVER}/member/register`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+  const json = await res.json().catch(() => null);
+  if (!json) throw new Error(`Register API ${res.status}`);
+  return json;
 }

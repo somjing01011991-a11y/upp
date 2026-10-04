@@ -5,30 +5,35 @@ import BankSelect from './BankSelect.jsx';
 import Spinner from './Spinner.jsx';
 
 const PHONE_RE = /^0\d{9}$/;
+const PASSWORD_MIN = 6;
 const PASSWORD_MAX = 20;
-const EMPTY = { firstName: '', lastName: '', accountNo: '', bankCode: '', channel: '', password: '', confirmPassword: '' };
+const EMPTY = { Fname: '', Lname: '', AccNumber: '', BankCode: '', Channel: '', LineId: '', Password: '', confirmPassword: '' };
 
 function validate(f) {
   const e = {};
-  if (!f.firstName.trim()) e.firstName = 'กรุณากรอกชื่อ';
-  if (!f.lastName.trim()) e.lastName = 'กรุณากรอกนามสกุล';
-  if (!f.bankCode) e.bankCode = 'กรุณาเลือกธนาคาร';
-  if (!/^\d{10,15}$/.test(f.accountNo)) e.accountNo = 'เลขบัญชีต้องเป็นตัวเลข 10–15 หลัก';
-  if (!f.channel) e.channel = 'กรุณาเลือกช่องทางที่รู้จัก';
-  if (!f.password) e.password = 'กรุณากรอกรหัสผ่าน';
-  else if (f.password.length > PASSWORD_MAX) e.password = `รหัสผ่านต้องไม่เกิน ${PASSWORD_MAX} ตัวอักษร`;
+  if (!f.Fname.trim()) e.Fname = 'กรุณากรอกชื่อ';
+  if (!f.Lname.trim()) e.Lname = 'กรุณากรอกนามสกุล';
+  if (!f.BankCode) e.BankCode = 'กรุณาเลือกธนาคาร';
+  if (!/^\d{10,16}$/.test(f.AccNumber)) e.AccNumber = 'เลขบัญชีต้องเป็นตัวเลข 10–16 หลัก';
+  if (!f.Channel) e.Channel = 'กรุณาเลือกช่องทางที่รู้จัก';
+  if (!f.Password) e.Password = 'กรุณากรอกรหัสผ่าน';
+  else if (f.Password.length < PASSWORD_MIN || f.Password.length > PASSWORD_MAX)
+    e.Password = `รหัสผ่านต้องมี ${PASSWORD_MIN}–${PASSWORD_MAX} ตัวอักษร`;
   if (!f.confirmPassword) e.confirmPassword = 'กรุณายืนยันรหัสผ่าน';
-  else if (f.confirmPassword !== f.password) e.confirmPassword = 'รหัสผ่านไม่ตรงกัน';
+  else if (f.confirmPassword !== f.Password) e.confirmPassword = 'รหัสผ่านไม่ตรงกัน';
   return e;
 }
 
 /**
  * สมัครสมาชิก 2 ขั้น
- * 1. กรอกเบอร์โทร → checkPhone(): false = แสดงว่าเบอร์ถูกใช้งานแล้ว, true = ไปขั้นถัดไป
- * 2. ชื่อ, นามสกุล, เลขบัญชี, ธนาคาร, ช่องทางที่รู้จัก, รหัสผ่าน + ยืนยันรหัสผ่าน (ตรงกัน, ไม่เกิน 20 ตัว)
+ * 1. กรอกเบอร์โทร 10 หลัก → checkPhone() (POST /member/checkphonenumber): verify false = เบอร์ซ้ำ, true = ไปขั้นถัดไป
+ * 2. ชื่อ, นามสกุล, ธนาคาร, เลขบัญชี (10–16 หลัก), ช่องทางที่รู้จัก, LINE ID (ไม่บังคับ),
+ *    รหัสผ่าน + ยืนยันรหัสผ่าน (ตรงกัน, 6–20 ตัว) → register() (POST /member/register)
+ * register: true → onRegistered(data) เข้าสู่ระบบทันที, register: false → แสดงข้อความสมัครไม่สำเร็จ
  */
-export default function RegisterForm({ onDone }) {
-  const [step, setStep] = useState('phone'); // phone | details | done
+export default function RegisterForm({ onRegistered }) {
+  const [step, setStep] = useState('phone'); // phone | details
+  const [submitError, setSubmitError] = useState('');
   const [phone, setPhone] = useState('');
   const [phoneError, setPhoneError] = useState('');
   const [form, setForm] = useState(EMPTY);
@@ -55,9 +60,10 @@ export default function RegisterForm({ onDone }) {
   };
 
   const set = (k) => (ev) => {
-    const v = k === 'accountNo' ? ev.target.value.replace(/\D/g, '') : ev.target.value;
+    const v = k === 'AccNumber' ? ev.target.value.replace(/\D/g, '') : ev.target.value;
     setForm((f) => ({ ...f, [k]: v }));
     if (errors[k]) setErrors((e) => ({ ...e, [k]: undefined }));
+    setSubmitError('');
   };
 
   const submitDetails = async (ev) => {
@@ -66,24 +72,29 @@ export default function RegisterForm({ onDone }) {
     setErrors(e);
     if (Object.keys(e).length) return;
     setBusy(true);
+    setSubmitError('');
     try {
-      const { confirmPassword, ...rest } = form; // confirmation is checked here only, not sent
-      await register({ phone, ...rest, firstName: form.firstName.trim(), lastName: form.lastName.trim() });
-      setStep('done');
-      onDone?.();
+      const res = await register({
+        PhoneNumber: phone,
+        Fname: form.Fname.trim(),
+        Lname: form.Lname.trim(),
+        Channel: form.Channel,
+        Password: form.Password, // confirmPassword is checked here only, not sent
+        LineId: form.LineId.trim(),
+        BankCode: form.BankCode,
+        AccNumber: form.AccNumber,
+      });
+      if (res.register === true && res.data) {
+        onRegistered?.(res.data);
+        return;
+      }
+      setSubmitError(typeof res.msg === 'string' && res.msg ? res.msg : 'สมัครสมาชิกไม่สำเร็จ');
+    } catch {
+      setSubmitError('สมัครสมาชิกไม่สำเร็จ ลองใหม่อีกครั้ง');
     } finally {
       setBusy(false);
     }
   };
-
-  if (step === 'done') {
-    return (
-      <div className="ta-section ta-reg">
-        <h2 className="ta-reg-title">สมัครสมาชิกสำเร็จ</h2>
-        <p className="ta-reg-hint">ยินดีต้อนรับ คุณ{form.firstName}</p>
-      </div>
-    );
-  }
 
   return (
     <div className="ta-section ta-reg">
@@ -127,13 +138,13 @@ export default function RegisterForm({ onDone }) {
           <div className="ta-reg-row">
             <label className="ta-field">
               <span className="ta-field-label">ชื่อ</span>
-              <input className="ta-input" autoComplete="given-name" value={form.firstName} onChange={set('firstName')} aria-invalid={!!errors.firstName} />
-              {errors.firstName && <span className="ta-field-error">{errors.firstName}</span>}
+              <input className="ta-input" autoComplete="given-name" value={form.Fname} onChange={set('Fname')} aria-invalid={!!errors.Fname} />
+              {errors.Fname && <span className="ta-field-error">{errors.Fname}</span>}
             </label>
             <label className="ta-field">
               <span className="ta-field-label">นามสกุล</span>
-              <input className="ta-input" autoComplete="family-name" value={form.lastName} onChange={set('lastName')} aria-invalid={!!errors.lastName} />
-              {errors.lastName && <span className="ta-field-error">{errors.lastName}</span>}
+              <input className="ta-input" autoComplete="family-name" value={form.Lname} onChange={set('Lname')} aria-invalid={!!errors.Lname} />
+              {errors.Lname && <span className="ta-field-error">{errors.Lname}</span>}
             </label>
           </div>
 
@@ -141,37 +152,42 @@ export default function RegisterForm({ onDone }) {
             <span className="ta-field-label">ธนาคาร</span>
             <BankSelect
               banks={BankList}
-              value={form.bankCode}
-              invalid={!!errors.bankCode}
-              onChange={(code) => set('bankCode')({ target: { value: code } })}
+              value={form.BankCode}
+              invalid={!!errors.BankCode}
+              onChange={(code) => set('BankCode')({ target: { value: code } })}
             />
-            {errors.bankCode && <span className="ta-field-error">{errors.bankCode}</span>}
+            {errors.BankCode && <span className="ta-field-error">{errors.BankCode}</span>}
           </div>
 
           <label className="ta-field">
             <span className="ta-field-label">เลขบัญชี</span>
-            <input className="ta-input" inputMode="numeric" maxLength={15} placeholder="ตัวเลขเท่านั้น" value={form.accountNo} onChange={set('accountNo')} aria-invalid={!!errors.accountNo} />
-            {errors.accountNo && <span className="ta-field-error">{errors.accountNo}</span>}
+            <input className="ta-input" inputMode="numeric" maxLength={16} placeholder="ตัวเลข 10–16 หลัก" value={form.AccNumber} onChange={set('AccNumber')} aria-invalid={!!errors.AccNumber} />
+            {errors.AccNumber && <span className="ta-field-error">{errors.AccNumber}</span>}
           </label>
 
           <fieldset className="ta-field">
             <legend className="ta-field-label">รู้จักเราผ่านช่องทาง</legend>
             <div className="ta-chips">
               {Channel.map((c) => (
-                <label key={c.va} className={`ta-chip${form.channel === c.va ? ' is-on' : ''}`}>
-                  <input type="radio" name="channel" value={c.va} checked={form.channel === c.va} onChange={set('channel')} />
+                <label key={c.va} className={`ta-chip${form.Channel === c.va ? ' is-on' : ''}`}>
+                  <input type="radio" name="channel" value={c.va} checked={form.Channel === c.va} onChange={set('Channel')} />
                   {c.Channel}
                 </label>
               ))}
             </div>
-            {errors.channel && <span className="ta-field-error">{errors.channel}</span>}
+            {errors.Channel && <span className="ta-field-error">{errors.Channel}</span>}
           </fieldset>
+
+          <label className="ta-field">
+            <span className="ta-field-label">LINE ID <span className="ta-field-opt">(ไม่บังคับ)</span></span>
+            <input className="ta-input" autoComplete="off" maxLength={50} value={form.LineId} onChange={set('LineId')} />
+          </label>
 
           <div className="ta-reg-row">
             <label className="ta-field">
               <span className="ta-field-label">รหัสผ่าน</span>
-              <input className="ta-input" type="password" autoComplete="new-password" maxLength={PASSWORD_MAX} value={form.password} onChange={set('password')} aria-invalid={!!errors.password} />
-              {errors.password && <span className="ta-field-error">{errors.password}</span>}
+              <input className="ta-input" type="password" autoComplete="new-password" maxLength={PASSWORD_MAX} value={form.Password} onChange={set('Password')} aria-invalid={!!errors.Password} />
+              {errors.Password && <span className="ta-field-error">{errors.Password}</span>}
             </label>
             <label className="ta-field">
               <span className="ta-field-label">ยืนยันรหัสผ่าน</span>
@@ -179,7 +195,9 @@ export default function RegisterForm({ onDone }) {
               {errors.confirmPassword && <span className="ta-field-error">{errors.confirmPassword}</span>}
             </label>
           </div>
-          <p className="ta-reg-hint ta-reg-note">รหัสผ่านไม่เกิน {PASSWORD_MAX} ตัวอักษร</p>
+          <p className="ta-reg-hint ta-reg-note">รหัสผ่าน {PASSWORD_MIN}–{PASSWORD_MAX} ตัวอักษร</p>
+
+          {submitError && <p className="ta-field-error ta-reg-error" role="alert">{submitError}</p>}
 
           <button className="ta-btn ta-btn--primary ta-reg-submit" type="submit" disabled={busy}>
             {busy ? <><Spinner size={18} /> กำลังสมัคร…</> : 'สมัครสมาชิก'}

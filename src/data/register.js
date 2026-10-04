@@ -25,10 +25,10 @@ export const BankList = [
 
 // ช่องทางที่รู้จัก
 export const Channel = [
-  { va: 'Google', Channel: 'Google' },
-  { va: 'Youtube', Channel: 'Youtube' },
-  { va: 'Facebook', Channel: 'Facebook' },
-  { va: 'Website', Channel: 'Website' },
+  { va: 'GOOGLE', Channel: 'Google' },
+  { va: 'YOUTUBE', Channel: 'Youtube' },
+  { va: 'FACEBOOK', Channel: 'Facebook' },
+  { va: 'WEBSITE', Channel: 'Website' },
   { va: 'TIKTOK', Channel: 'TIKTOK' },
   { va: 'SMS', Channel: 'SMS' },
   { va: 'X', Channel: 'X (Twitter)' },
