@@ -91,6 +91,7 @@
 .ta-stat-value { font-size: 16px; line-height: 20px; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .ta-stat--credit .ta-stat-value { color: var(--c-info); }
 .ta-stat--wallet .ta-stat-value { color: var(--c-positive); }
+.ta-stat--commission .ta-stat-value { color: var(--c-primary); }
 
 .ta-user { display: flex; align-items: center; gap: 10px; order: 3; }
 .ta-user-meta { text-align: right; }
@@ -101,11 +102,23 @@
   font-size: 10px; line-height: 14px; font-weight: 700; letter-spacing: .04em;
   padding: 1px 8px; border-radius: var(--r-pill);
 }
+.ta-login { order: 3; padding: 9px 22px; font-size: 14px; }
+.ta-avatar-wrap { position: relative; flex: none; }
+.ta-menu {
+  position: absolute; right: 0; top: calc(100% + 6px); z-index: 40; min-width: 150px; padding: 6px;
+  background: var(--c-surface); border: 1px solid var(--c-line); border-radius: var(--r-md);
+  box-shadow: var(--shadow-card, 0 6px 18px rgba(0,0,0,.45));
+}
+.ta-menu button {
+  display: block; width: 100%; padding: 9px 12px; text-align: left; cursor: pointer;
+  background: none; border: 0; border-radius: var(--r-sm); color: var(--c-text); font: inherit; font-size: 14px;
+}
+.ta-menu button:hover { background: var(--c-raised); }
 .ta-avatar {
   width: 40px; height: 40px; flex: none; border-radius: 50%;
   display: grid; place-items: center;
   background: var(--c-raised); border: 2px solid var(--c-primary);
-  font-weight: 600; font-size: 16px;
+  font-weight: 600; font-size: 16px; color: var(--c-text); font-family: inherit; padding: 0; cursor: pointer;
 }
 
 /* ---------- 2. body: sidebar | content ---------- */
@@ -383,6 +396,7 @@
   box-shadow: var(--glow-gold, 0 0 0 1px rgba(247,183,51,.55), 0 8px 22px rgba(247,183,51,.28));
 }
 .ta-nav-orb svg { width: 24px; height: 24px; }
+.ta-nav-label { white-space: nowrap; }
 .ta-nav-item--primary .ta-nav-label { color: var(--c-primary); font-weight: 500; }
 
 /* ---------- mobile ---------- */
@@ -402,8 +416,24 @@
   .ta-plogo { max-width: 84px; height: 24px; }
 }
 @container app (max-width: 380px) {
-  .ta-user-sub span:first-child { display: none; }
+  .ta-user-sub span:not(.ta-rank) { display: none; }
 }
+
+/* ---------- login modal ---------- */
+.ta-login-modal { width: min(400px, 100%); }
+.ta-login-body { display: flex; flex-direction: column; gap: 12px; padding: 4px 16px 18px; }
+.ta-field { display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: var(--c-muted); }
+.ta-field input {
+  height: 44px; padding: 0 14px; font: inherit; font-size: 15px; color: var(--c-text);
+  background: var(--c-card); border: 1px solid var(--c-line); border-radius: var(--r-md);
+}
+.ta-field input:focus { border-color: var(--c-primary); }
+.ta-login-error {
+  margin: 0; padding: 8px 12px; font-size: 13px; color: var(--c-hot);
+  background: color-mix(in srgb, var(--c-hot) 12%, transparent); border-radius: var(--r-md);
+}
+.ta-login-submit { height: 44px; font-size: 15px; margin-top: 4px; }
+.ta-login-submit:disabled { opacity: .6; cursor: default; }
 
 /* ---------- loading screen (shown before the theme root exists, so plain colors) ---------- */
 .ta-loading {

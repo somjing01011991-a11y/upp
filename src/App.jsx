@@ -1,8 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import GameApp from './components/GameApp.jsx';
+import LoginModal from './components/LoginModal.jsx';
 import PromotionPage from './components/PromotionPage.jsx';
 import theme from './config/theme.json';
-import { web, user } from './data/session.js';
+import { web } from './data/session.js';
+import { clearSession, loadSession, saveSession, toHeaderUser } from './lib/session.js';
 import { fetchGames, fetchProviderTypes, fetchProviders, fetchWebConfig } from './lib/api.js';
 
 // หน้าของเมนูบาร์ที่ยังไม่ได้ทำ — แทนที่ด้วยหน้าจริง
@@ -34,6 +36,29 @@ export default function App() {
   const [games, setGames] = useState({}); // { [providerCode]: Game[] | null } — missing = loading
   const [category, setCategory] = useState('slot');
   const [page, setPage] = useState('home');
+  const [member, setMember] = useState(loadSession); // login response kept in sessionStorage; null = guest
+  const [loginOpen, setLoginOpen] = useState(false);
+  const user = useMemo(() => toHeaderUser(member), [member]);
+
+  const onLoggedIn = (res) => {
+    saveSession(res);
+    setMember(res);
+    setLoginOpen(false);
+  };
+  const logout = () => {
+    clearSession();
+    setMember(null);
+    setPage('home');
+  };
+  // "สมัครสมาชิก" (guest replacement of the profile menu) opens the login modal too
+  const navigate = (k) => {
+    if (k === 'register') {
+      setLoginOpen(true);
+      return false;
+    }
+    setPage(k);
+    return true;
+  };
 
   // site config first (logo + colors); on failure keep the built-in theme and logo
   useEffect(() => {
@@ -103,7 +128,10 @@ export default function App() {
         setPage('home');
       }}
       activeNav={page}
-      onNavigate={setPage}
+      onNavigate={navigate}
+      onLogin={() => setLoginOpen(true)}
+      onLogout={logout}
+      overlay={loginOpen && <LoginModal onSuccess={onLoggedIn} onClose={() => setLoginOpen(false)} />}
       onOpenProvider={loadGames}
       onPlay={handlePlay}
     >

@@ -76,3 +76,18 @@ export async function fetchWebConfig() {
   if (json.msg !== true) throw new Error(typeof json.msg === 'string' ? json.msg : 'Web config API error');
   return (Array.isArray(json.data) ? json.data[0] : json.data) || null;
 }
+
+/**
+ * Member login: POST {API_SERVER}/member/login with { PhoneNumber, Password }.
+ * Resolves to the response — { login: true, Username, Fname, …, accesstoken } or { login: false, msg }.
+ */
+export async function login(PhoneNumber, Password) {
+  const res = await fetch(`${API_SERVER}/member/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ PhoneNumber, Password }),
+  });
+  const json = await res.json().catch(() => null);
+  if (!json) throw new Error(`Login API ${res.status}`);
+  return json;
+}

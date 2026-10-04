@@ -22,6 +22,9 @@ function AppInner({
   onNavigate,
   onCategoryChange,
   onOpenProvider,
+  onLogin,
+  onLogout,
+  overlay,
   children,
 }) {
   const cfg = useConfig();
@@ -105,7 +108,7 @@ function AppInner({
 
   return (
     <div className="ta-app" ref={rootRef}>
-      <AppHeader ref={headerRef} web={web} user={user} />
+      <AppHeader ref={headerRef} web={web} user={user} onLogin={onLogin} onLogout={onLogout} />
 
       <div className="ta-body">
         <CategorySidebar active={cat?.key} onSelect={selectCat} categories={cats} counts={counts} />
@@ -211,11 +214,13 @@ function AppInner({
       <BottomNav
         active={navKey}
         fixed={navFixed}
+        loggedIn={!!user}
         onSelect={(k) => {
-          setNavKey(k);
-          onNavigate?.(k);
+          // onNavigate returning false = handled without a page change (e.g. opens a modal), keep the highlight
+          if (onNavigate?.(k) !== false) setNavKey(k);
         }}
       />
+      {overlay}
     </div>
   );
 }
@@ -223,7 +228,7 @@ function AppInner({
 /**
  * Whole app: header + (category sidebar | provider tiles of the selected category) + bottom nav.
  * Clicking a provider tile shows that provider's games (`games[provider]`, loaded via onOpenProvider).
- * `children`, when given, replaces the provider content (use it for other pages).
+ * `children`, when given, replaces the provider content (use it for other pages); `overlay` renders on top (modals).
  */
 export default function GameApp({ config, className, ...props }) {
   return (
