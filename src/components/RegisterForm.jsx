@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { BankList, Channel } from '../data/register.js';
 import { checkPhone, register } from '../lib/api.js';
-import BankIcon from './BankIcon.jsx';
+import BankSelect from './BankSelect.jsx';
 import Spinner from './Spinner.jsx';
 
 const PHONE_RE = /^0\d{9}$/;
@@ -137,19 +137,16 @@ export default function RegisterForm({ onDone }) {
             </label>
           </div>
 
-          <fieldset className="ta-field">
-            <legend className="ta-field-label">ธนาคาร</legend>
-            <div className="ta-banks">
-              {BankList.map((b) => (
-                <label key={b.BankCode} className={`ta-bank${form.bankCode === b.BankCode ? ' is-on' : ''}`} title={b.BankName}>
-                  <input type="radio" name="bank" value={b.BankCode} checked={form.bankCode === b.BankCode} onChange={set('bankCode')} />
-                  <BankIcon code={b.BankCode} size={36} />
-                  <span className="ta-bank-name">{b.BankName}</span>
-                </label>
-              ))}
-            </div>
+          <div className="ta-field">
+            <span className="ta-field-label">ธนาคาร</span>
+            <BankSelect
+              banks={BankList}
+              value={form.bankCode}
+              invalid={!!errors.bankCode}
+              onChange={(code) => set('bankCode')({ target: { value: code } })}
+            />
             {errors.bankCode && <span className="ta-field-error">{errors.bankCode}</span>}
-          </fieldset>
+          </div>
 
           <label className="ta-field">
             <span className="ta-field-label">เลขบัญชี</span>
