@@ -173,7 +173,6 @@ function AppInner({
                         <ProviderTile
                           key={p.provider}
                           provider={p}
-                          cta={p.detailStatus === false ? undefined : cfg.texts.games}
                           onSelect={openProvider}
                         />
                       ))}
