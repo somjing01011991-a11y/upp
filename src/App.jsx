@@ -139,9 +139,19 @@ export default function App() {
     () => (webConfig?.colors ? { ...theme, colors: { ...theme.colors, ...webConfig.colors } } : theme),
     [webConfig],
   );
-  // browser tab title follows the site name from webconfig
+  // browser tab title and icon follow the site name and logo from webconfig
   useEffect(() => {
     if (webConfig?.company) document.title = webConfig.company;
+    const logo = webConfig?.logo;
+    if (!logo) return;
+    const href = logo.trim().startsWith('<svg') ? `data:image/svg+xml,${encodeURIComponent(logo)}` : logo;
+    let link = document.querySelector('link[rel="icon"]');
+    if (!link) {
+      link = document.createElement('link');
+      link.rel = 'icon';
+      document.head.appendChild(link);
+    }
+    link.href = href;
   }, [webConfig]);
 
   const siteWeb = useMemo(
