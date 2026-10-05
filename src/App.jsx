@@ -6,6 +6,7 @@ import PromotionPage from './components/PromotionPage.jsx';
 import RegisterForm from './components/RegisterForm.jsx';
 import theme from './config/theme.json';
 import { web } from './data/session.js';
+import { parsePath, toPath } from './lib/route.js';
 import { captureReferral, clearSession, loadSession, saveSession, toHeaderUser } from './lib/session.js';
 import { fetchBalance, fetchGames, fetchCategories, fetchProviders, fetchWebConfig } from './lib/api.js';
 
@@ -23,9 +24,7 @@ function PlaceholderPage({ title }) {
 
 const BALANCE_INTERVAL_MS = 10_000;
 
-// /register opens the signup page directly; its ?ref=&pref= go to sessionStorage for the signup body
-const REGISTER_PATH = /\/register\/?$/;
-const pageFromUrl = () => (REGISTER_PATH.test(window.location.pathname) ? 'signup' : 'home');
+// /register?ref=&pref= — the codes go to sessionStorage for the signup body
 captureReferral();
 
 function LoadingScreen() {
@@ -43,8 +42,10 @@ export default function App() {
   const [categoryMap, setCategoryMap] = useState(null); // [{ providerType, category }] from the API (null = theme.json)
   const [error, setError] = useState('');
   const [games, setGames] = useState({}); // { [providerCode]: Game[] | null } — missing = loading
-  const [category, setCategory] = useState('slot');
-  const [page, setPage] = useState(pageFromUrl);
+  // what is on screen, mirrored in the URL (see lib/route.js); category null = first category
+  const [route, setRoute] = useState(() => parsePath());
+  const { page, category, provider } = route;
+  const setPage = (p) => setRoute((r) => ({ ...r, page: p }));
   const [member, setMember] = useState(loadSession); // login response kept in sessionStorage; null = guest
   const [loginOpen, setLoginOpen] = useState(false);
   const [welcomeOpen, setWelcomeOpen] = useState(false); // signup success popup
@@ -111,14 +112,13 @@ export default function App() {
     };
   }, [username, token]);
 
-  // keep the address bar in step with the signup page: /register while it is open, / otherwise
+  // keep the address bar in step with the page; back/forward and reload come back to the same view
   useEffect(() => {
-    const onSignupUrl = REGISTER_PATH.test(window.location.pathname);
-    if (page === 'signup' && !onSignupUrl) window.history.pushState(null, '', '/register');
-    else if (page !== 'signup' && onSignupUrl) window.history.pushState(null, '', '/');
-  }, [page]);
+    const path = toPath(route);
+    if (path !== window.location.pathname) window.history.pushState(null, '', path);
+  }, [route]);
   useEffect(() => {
-    const onPop = () => setPage(pageFromUrl());
+    const onPop = () => setRoute(parsePath());
     window.addEventListener('popstate', onPop);
     return () => window.removeEventListener('popstate', onPop);
   }, []);
@@ -185,11 +185,10 @@ export default function App() {
       providers={providers}
       categoryMap={categoryMap}
       games={games}
-      initialCategory={category}
-      onCategoryChange={(k) => {
-        setCategory(k);
-        setPage('home');
-      }}
+      category={category}
+      provider={provider}
+      onCategoryChange={(k) => setRoute({ page: 'home', category: k, provider: null })}
+      onProviderChange={(code) => setRoute((r) => ({ ...r, page: 'home', provider: code }))}
       activeNav={page}
       onNavigate={navigate}
       onLogin={() => setLoginOpen(true)}

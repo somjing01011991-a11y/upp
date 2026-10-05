@@ -77,6 +77,19 @@ VITE_API_SERVER=http://127.0.0.1:7001/api
 | `categories[]` | หมวดใน Sidebar: `label`, `icon`, `cover` (URL รูปปก), `sources` (คีย์ใน `data` ของ API), `display` (`games` / `providers`) |
 | `nav[]` | เมนูบาร์ล่าง (`primary: true` = ปุ่มกลมตรงกลาง) |
 
+## URL ของแต่ละหน้า
+
+ทุกหน้ามี path ของตัวเอง (`src/lib/route.js`) กดย้อนกลับ/ไปข้างหน้า, รีเฟรช หรือแชร์ลิงก์แล้วจะกลับมาหน้าเดิม
+
+| path | หน้า |
+|---|---|
+| `/` | หน้าแรก (หมวดแรก) |
+| `/category/{หมวด}` | หมวดเกม เช่น `/category/casino` |
+| `/category/{หมวด}/{ค่าย}` | รายชื่อเกมของค่าย เช่น `/category/slot/PGS` |
+| `/promotion` | โปรโมชั่น |
+| `/wallet`, `/profile`, `/contact` | ฝากถอน, โปรไฟล์, ติดต่อ |
+| `/register?ref=&pref=` | สมัครสมาชิก |
+
 ## ฟอร์มสมัครสมาชิก
 
 เปิดจากลิงก์ "สมัครสมาชิก" ใน modal เข้าสู่ระบบ หรือเปิดตรงที่ `/register` ก็ได้

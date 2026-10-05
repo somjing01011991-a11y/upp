@@ -14,7 +14,8 @@ function AppInner({
   providers,
   categoryMap = null,
   games,
-  initialCategory,
+  category = null,
+  provider = null,
   activeNav = 'home',
   navFixed = true,
   showCounts = false,
@@ -22,6 +23,7 @@ function AppInner({
   onNavigate,
   onCategoryChange,
   onOpenProvider,
+  onProviderChange,
   onLogin,
   onLogout,
   overlay,
@@ -36,7 +38,9 @@ function AppInner({
     [mapped.categories, data],
   );
 
-  const [catKey, setCatKey] = useState(initialCategory);
+  // category / open provider come from the parent (the URL) and are reported back on change
+  const [catKey, setCatKey] = useState(category);
+  useEffect(() => setCatKey(category), [category]);
   const [navKey, setNavKey] = useState(activeNav);
   useEffect(() => setNavKey(activeNav), [activeNav]);
 
@@ -65,8 +69,13 @@ function AppInner({
     : list;
 
   // provider opened from the grid — its game list replaces the grid
-  const [openKey, setOpenKey] = useState(null);
+  const [openKey, setOpenKey] = useState(provider);
+  useEffect(() => setOpenKey(provider), [provider]);
   const open = list.find((p) => p.provider === openKey) || null;
+  // load the open provider's games — also when it was opened straight from the URL
+  useEffect(() => {
+    if (open) onOpenProvider?.(open, cat);
+  }, [open?.provider]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // game-name search inside the open provider (case-insensitive, cleared when the provider changes)
   const [query, setQuery] = useState('');
@@ -81,7 +90,7 @@ function AppInner({
       return;
     }
     setOpenKey(p.provider);
-    onOpenProvider?.(p, cat);
+    onProviderChange?.(p.provider);
     window.scrollTo?.({ top: 0, behavior: 'smooth' });
   };
 
@@ -97,6 +106,7 @@ function AppInner({
   const toTop = () => window.scrollTo?.({ top: 0, behavior: 'smooth' });
   const closeProvider = () => {
     setOpenKey(null);
+    onProviderChange?.(null);
     toTop();
   };
 
