@@ -82,7 +82,8 @@
     { "key": "poker", "label": "โป๊กเกอร์", "icon": "poker", "cover": "", "sources": ["poker"], "display": "providers" },
     { "key": "cock", "label": "ไก่ชน", "icon": "cock", "cover": "", "sources": ["cock"], "display": "providers" },
     { "key": "esport", "label": "อีสปอร์ต", "icon": "esport", "cover": "", "sources": ["esport"], "display": "providers" },
-    { "key": "trade", "label": "เทรด", "icon": "trade", "cover": "", "sources": ["trade"], "display": "providers" }
+    { "key": "trade", "label": "เทรด", "icon": "trade", "cover": "", "sources": ["trade"], "display": "providers" },
+    { "key": "other", "label": "เกมอื่นๆ", "icon": "grid", "cover": "", "sources": [], "display": "providers" }
   ],
   "nav": [
     { "key": "wallet", "label": "ฝากถอน", "icon": "wallet" },

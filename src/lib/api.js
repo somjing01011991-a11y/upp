@@ -16,16 +16,16 @@ export async function fetchProviders() {
 }
 
 /**
- * Provider types to show in the sidebar: GET {API_SERVER}/member/providertype → { msg: true, data: ['SLOT', ...] }.
- * Returns null (show every type) when API_SERVER is empty.
+ * Sidebar grouping: GET {API_SERVER}/member/categories → { msg: true, data: [{ providerType, category }, ...] }.
+ * Returns null (use theme.json as is) when API_SERVER is empty.
  */
-export async function fetchProviderTypes() {
+export async function fetchCategories() {
   if (!API_SERVER) return null;
-  const res = await fetch(`${API_SERVER}/member/providertype`);
-  if (!res.ok) throw new Error(`Provider type API ${res.status}`);
+  const res = await fetch(`${API_SERVER}/member/categories`);
+  if (!res.ok) throw new Error(`Categories API ${res.status}`);
   const json = await res.json();
   if (json.msg !== true || !Array.isArray(json.data)) {
-    throw new Error(typeof json.msg === 'string' ? json.msg : 'Provider type API error');
+    throw new Error(typeof json.msg === 'string' ? json.msg : 'Categories API error');
   }
   return json.data;
 }

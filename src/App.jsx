@@ -7,7 +7,7 @@ import RegisterForm from './components/RegisterForm.jsx';
 import theme from './config/theme.json';
 import { web } from './data/session.js';
 import { captureReferral, clearSession, loadSession, saveSession, toHeaderUser } from './lib/session.js';
-import { fetchGames, fetchProviderTypes, fetchProviders, fetchWebConfig } from './lib/api.js';
+import { fetchGames, fetchCategories, fetchProviders, fetchWebConfig } from './lib/api.js';
 
 // หน้าของเมนูบาร์ที่ยังไม่ได้ทำ — แทนที่ด้วยหน้าจริง
 const PAGE_TITLE = { wallet: 'ฝากถอน', promo: 'โปรโมชั่น', profile: 'โปรไฟล์', contact: 'ติดต่อ' };
@@ -38,7 +38,7 @@ function LoadingScreen() {
 export default function App() {
   const [webConfig, setWebConfig] = useState(undefined); // undefined = loading, null = use built-in theme/logo
   const [providers, setProviders] = useState(null);
-  const [providerTypes, setProviderTypes] = useState(null); // sidebar shows only these types (null = all)
+  const [categoryMap, setCategoryMap] = useState(null); // [{ providerType, category }] from the API (null = theme.json)
   const [error, setError] = useState('');
   const [games, setGames] = useState({}); // { [providerCode]: Game[] | null } — missing = loading
   const [category, setCategory] = useState('slot');
@@ -114,9 +114,9 @@ export default function App() {
   );
 
   useEffect(() => {
-    Promise.all([fetchProviders(), fetchProviderTypes()])
-      .then(([list, types]) => {
-        setProviderTypes(types);
+    Promise.all([fetchProviders(), fetchCategories()])
+      .then(([list, map]) => {
+        setCategoryMap(map);
         setProviders(list);
       })
       .catch((e) => setError(e.message));
@@ -146,7 +146,7 @@ export default function App() {
       web={siteWeb}
       user={user}
       providers={providers}
-      providerTypes={providerTypes}
+      categoryMap={categoryMap}
       games={games}
       initialCategory={category}
       onCategoryChange={(k) => {

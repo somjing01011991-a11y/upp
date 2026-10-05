@@ -51,7 +51,11 @@ VITE_API_SERVER=http://127.0.0.1:7001/api
 
 - ก่อนเปิดหน้า โหลด `GET {VITE_API_SERVER}/member/webconfig` แล้วใช้ `data[0].logo` เป็นโลโก้, `data[0].company` เป็นชื่อเว็บข้างโลโก้และไตเติลแท็บ และ `data[0].colors` ทับสีใน `theme.json` (ชื่อคีย์เดียวกัน) ถ้าโหลดไม่สำเร็จใช้ธีมและโลโก้เดิม
 - รายชื่อค่ายโหลดจาก `GET {VITE_API_SERVER}/member/gameprovider` ซึ่งคืน `{ msg: true, data: [ { provider, providerType, ... } ] }` แล้วจัดเข้าหมวดตาม `providerType` ตัวพิมพ์เล็ก (`SLOT` → `slot`, `AFB` → `afb`) ให้ตรงกับ `sources` ใน `theme.json`
-- หมวดใน Sidebar แสดงเฉพาะประเภทที่อยู่ใน `GET {VITE_API_SERVER}/member/providertype` (`{ msg: true, data: ['SLOT', 'AFB', ...] }`) ประเภทที่ไม่อยู่ในลิสต์จะไม่แสดง
+- หมวดใน Sidebar จัดตาม `GET {VITE_API_SERVER}/member/categories` (`{ msg: true, data: [{ providerType: 'AFB', category: 'sport' }, ...] }`)
+  - providerType ที่ไม่อยู่ในลิสต์จะไม่แสดง
+  - `category` ตรงกับ `key` ใน `theme.json` → เข้าหมวดนั้น
+  - `category` เป็น `null` (หรือไม่รู้จัก) → ใช้หมวดใน `theme.json` ที่มี providerType นี้ใน `sources`
+  - ไม่เจอทั้งสองแบบ → เข้าหมวด "เกมอื่นๆ" (`key: "other"`)
 - เมนูโปรโมชั่นโหลดจาก `GET {VITE_API_SERVER}/member/promotion` แสดงรูป `media.coverImage` กับ `bonusName` คลิกแล้วเปิด modal แสดง `bonusDescription` (คงการขึ้นบรรทัดใหม่)
 - เข้าสู่ระบบ: ปุ่ม "เข้าสู่ระบบ" มุมบน และเมนู "สมัครสมาชิก" (แทนโปรไฟล์ตอนยังไม่ล็อกอิน) เปิด modal กรอก PhoneNumber, Password → `POST {VITE_API_SERVER}/member/login` ถ้า `login: false` แสดง `msg` ถ้าสำเร็จเก็บ response ไว้ใน `sessionStorage` (`src/lib/session.js`) แล้วแสดง Username, Ranking, เครดิต, กระเป๋าเงิน, ค่าคอมมิชชั่น กดรูปโปรไฟล์เพื่อออกจากระบบ
 - ใส่ `VITE_API_SERVER=` (ค่าว่าง) เพื่อใช้ข้อมูลตัวอย่างแทน

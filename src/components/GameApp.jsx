@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { ThemeProvider, useConfig } from '../theme/ThemeProvider.jsx';
-import { normalizeProviders, providersFor } from '../lib/providers.js';
+import { applyCategoryMap, normalizeProviders, providersFor } from '../lib/providers.js';
 import AppHeader from './AppHeader.jsx';
 import BottomNav from './BottomNav.jsx';
 import CategorySidebar from './CategorySidebar.jsx';
@@ -12,7 +12,7 @@ function AppInner({
   web,
   user,
   providers,
-  providerTypes = null,
+  categoryMap = null,
   games,
   initialCategory,
   activeNav = 'home',
@@ -28,10 +28,12 @@ function AppInner({
   children,
 }) {
   const cfg = useConfig();
-  const data = useMemo(() => normalizeProviders(providers, providerTypes), [providers, providerTypes]);
+  // categories API decides which providerTypes show and where; theme.json fills the gaps
+  const mapped = useMemo(() => applyCategoryMap(cfg.categories, categoryMap), [cfg.categories, categoryMap]);
+  const data = useMemo(() => normalizeProviders(providers, mapped.types), [providers, mapped.types]);
   const cats = useMemo(
-    () => cfg.categories.filter((c) => providersFor(c, data).length > 0),
-    [cfg.categories, data],
+    () => mapped.categories.filter((c) => providersFor(c, data).length > 0),
+    [mapped.categories, data],
   );
 
   const [catKey, setCatKey] = useState(initialCategory);
