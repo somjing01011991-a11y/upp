@@ -77,6 +77,14 @@ VITE_API_SERVER=http://127.0.0.1:7001/api
 | `categories[]` | หมวดใน Sidebar: `label`, `icon`, `cover` (URL รูปปก), `sources` (คีย์ใน `data` ของ API), `display` (`games` / `providers`) |
 | `nav[]` | เมนูบาร์ล่าง (`primary: true` = ปุ่มกลมตรงกลาง) |
 
+## เข้าเล่นเกม
+
+- ยังไม่ล็อกอิน: กดเกมแล้วเปิด modal เข้าสู่ระบบ
+- ล็อกอินแล้ว: ไปที่ `/play/{ค่าย}/{เกม}` แล้วเรียก `POST {VITE_API_SERVER}/member/playgame` ด้วย
+  `{ Username, accesstoken, provider, gameID, redirectUrl }` (`redirectUrl` = URL หน้ารายชื่อเกมที่กดมา)
+- `{ msg: true, url }` → เปิด `url` ใน iframe เต็มจอ มีแถบบน: ปุ่ม "ออก" (กลับหน้าเลือกเกม) และ Username + เครดิต
+- `{ msg: false }` → แสดง `error` ถ้ามี ไม่มีแสดง "เกมปิดปรับปรุง"
+
 ## URL ของแต่ละหน้า
 
 ทุกหน้ามี path ของตัวเอง (`src/lib/route.js`) กดย้อนกลับ/ไปข้างหน้า, รีเฟรช หรือแชร์ลิงก์แล้วจะกลับมาหน้าเดิม
@@ -89,6 +97,7 @@ VITE_API_SERVER=http://127.0.0.1:7001/api
 | `/promotion` | โปรโมชั่น |
 | `/wallet`, `/profile`, `/contact` | ฝากถอน, โปรไฟล์, ติดต่อ |
 | `/register?ref=&pref=` | สมัครสมาชิก |
+| `/play/{ค่าย}/{เกม}` | เล่นเกม (iframe) |
 
 ## ฟอร์มสมัครสมาชิก
 

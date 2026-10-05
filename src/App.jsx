@@ -2,13 +2,14 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import GameApp from './components/GameApp.jsx';
 import LoginModal from './components/LoginModal.jsx';
 import WelcomeModal from './components/WelcomeModal.jsx';
+import GamePlayer from './components/GamePlayer.jsx';
 import PromotionPage from './components/PromotionPage.jsx';
 import RegisterForm from './components/RegisterForm.jsx';
 import theme from './config/theme.json';
 import { web } from './data/session.js';
 import { parsePath, toPath } from './lib/route.js';
 import { captureReferral, clearSession, loadSession, saveSession, toHeaderUser } from './lib/session.js';
-import { fetchBalance, fetchGames, fetchCategories, fetchProviders, fetchWebConfig } from './lib/api.js';
+import { playGame, fetchBalance, fetchGames, fetchCategories, fetchProviders, fetchWebConfig } from './lib/api.js';
 
 // หน้าของเมนูบาร์ที่ยังไม่ได้ทำ — แทนที่ด้วยหน้าจริง
 const PAGE_TITLE = { wallet: 'ฝากถอน', promo: 'โปรโมชั่น', profile: 'โปรไฟล์', contact: 'ติดต่อ' };
@@ -46,6 +47,8 @@ export default function App() {
   const [route, setRoute] = useState(() => parsePath());
   const { page, category, provider } = route;
   const setPage = (p) => setRoute((r) => ({ ...r, page: p }));
+  const [playUrl, setPlayUrl] = useState(null); // launch URL of the game on /play/…
+  const [notice, setNotice] = useState(''); // small alert modal (game closed, …)
   const [member, setMember] = useState(loadSession); // login response kept in sessionStorage; null = guest
   const [loginOpen, setLoginOpen] = useState(false);
   const [welcomeOpen, setWelcomeOpen] = useState(false); // signup success popup
@@ -169,10 +172,52 @@ export default function App() {
       .then((list) => setGames((cur) => ({ ...cur, [p.provider]: list })));
   };
 
-  const handlePlay = (game, provider) => {
-    // TODO: เรียก API เปิดเกม แล้ว window.open(url)
-    console.log('play', provider.provider, game?.gameCode ?? '(lobby)');
+  // play: guests get the login form; members open /play/{provider}/{game}, which asks the API for the launch URL
+  const handlePlay = (game, p) => {
+    if (!member) {
+      setLoginOpen(true);
+      return;
+    }
+    setPlayUrl(null);
+    setRoute((r) => ({ ...r, page: 'play', play: { provider: p.provider, gameID: game?.gameCode ?? '' } }));
   };
+  const exitGame = () => {
+    setPlayUrl(null);
+    setRoute((r) => ({ ...r, page: 'home', play: null }));
+  };
+  const play = page === 'play' ? route.play : null;
+  useEffect(() => {
+    if (!play) return undefined;
+    if (!member) {
+      // opened /play/… while logged out (or the session ended): back to the games, login first
+      exitGame();
+      setLoginOpen(true);
+      return undefined;
+    }
+    let cancelled = false;
+    // the game returns to the page the player came from (the game list), not to /play/…
+    const back = `${window.location.origin}${toPath({ ...route, page: 'home', play: null })}`;
+    playGame({
+      Username: member.Username,
+      accesstoken: member.accesstoken,
+      provider: play.provider,
+      gameID: play.gameID,
+      redirectUrl: back,
+    })
+      .catch(() => ({ msg: false }))
+      .then((res) => {
+        if (cancelled) return;
+        if (res.msg === true && res.url) {
+          setPlayUrl(res.url);
+          return;
+        }
+        exitGame();
+        setNotice(typeof res.error === 'string' && res.error ? res.error : 'เกมปิดปรับปรุง');
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [play?.provider, play?.gameID, member?.accesstoken]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (error) return <p style={{ color: '#ff5d3a', padding: 16 }}>โหลดรายชื่อค่ายไม่สำเร็จ: {error}</p>;
   if (webConfig === undefined || !providers) return <LoadingScreen />;
@@ -189,12 +234,23 @@ export default function App() {
       provider={provider}
       onCategoryChange={(k) => setRoute({ page: 'home', category: k, provider: null })}
       onProviderChange={(code) => setRoute((r) => ({ ...r, page: 'home', provider: code }))}
-      activeNav={page}
+      activeNav={page === 'play' ? 'home' : page}
       onNavigate={navigate}
       onLogin={() => setLoginOpen(true)}
       onLogout={logout}
       overlay={
-        welcomeOpen ? (
+        play && member ? (
+          <GamePlayer url={playUrl} member={member} onExit={exitGame} />
+        ) : notice ? (
+          <div className="ta-modal-backdrop" onClick={() => setNotice('')}>
+            <div className="ta-modal ta-alert-modal" role="alertdialog" aria-modal="true" onClick={(e) => e.stopPropagation()}>
+              <p>{notice}</p>
+              <button type="button" className="ta-btn ta-login-submit" onClick={() => setNotice('')} autoFocus>
+                ตกลง
+              </button>
+            </div>
+          </div>
+        ) : welcomeOpen ? (
           <WelcomeModal siteName={siteWeb.Name} onClose={() => setWelcomeOpen(false)} />
         ) : loginOpen && (
           <LoginModal
@@ -210,7 +266,7 @@ export default function App() {
       onOpenProvider={loadGames}
       onPlay={handlePlay}
     >
-      {page === 'home' ? undefined : page === 'promo' ? <PromotionPage /> : page === 'signup' ? <RegisterForm onRegistered={registered} /> : <PlaceholderPage title={PAGE_TITLE[page]} />}
+      {page === 'home' || page === 'play' ? undefined : page === 'promo' ? <PromotionPage /> : page === 'signup' ? <RegisterForm onRegistered={registered} /> : <PlaceholderPage title={PAGE_TITLE[page]} />}
     </GameApp>
   );
 }

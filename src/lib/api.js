@@ -96,6 +96,21 @@ export async function fetchBalance(Username, accesstoken) {
 }
 
 /**
+ * Game launch: POST {API_SERVER}/member/playgame with { Username, accesstoken, provider, gameID, redirectUrl }.
+ * Resolves to { msg: true, url } or { msg: false, error? }.
+ */
+export async function playGame(body) {
+  const res = await fetch(`${API_SERVER}/member/playgame`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+  const json = await res.json().catch(() => null);
+  if (!json) throw new Error(`Play game API ${res.status}`);
+  return json;
+}
+
+/**
  * Member login: POST {API_SERVER}/member/login with { PhoneNumber, Password }.
  * Resolves to the response — { login: true, Username, Fname, …, accesstoken } or { login: false, msg }.
  */
