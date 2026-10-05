@@ -37,3 +37,30 @@ export const toHeaderUser = (m) =>
     wallet: m.totalWallet,
     commission: m.totalCommission,
   };
+
+// Referral codes from a signup link (/register?ref=…&pref=…), kept in sessionStorage and sent with the signup.
+const REF_KEY = 'ta-ref';
+
+/**
+ * Store ref/pref when the URL carries either of them (a missing one becomes null).
+ * A URL with neither leaves what was stored earlier in this tab untouched.
+ */
+export function captureReferral(search = window.location.search) {
+  const q = new URLSearchParams(search);
+  if (!q.has('ref') && !q.has('pref')) return;
+  try {
+    sessionStorage.setItem(REF_KEY, JSON.stringify({ ref: q.get('ref') || null, pref: q.get('pref') || null }));
+  } catch {
+    // storage blocked — the signup sends nulls
+  }
+}
+
+/** { ref, pref } — each null when not set. */
+export function loadReferral() {
+  try {
+    const r = JSON.parse(sessionStorage.getItem(REF_KEY) || 'null');
+    return { ref: r?.ref ?? null, pref: r?.pref ?? null };
+  } catch {
+    return { ref: null, pref: null };
+  }
+}

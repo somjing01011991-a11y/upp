@@ -74,10 +74,16 @@ VITE_API_SERVER=http://127.0.0.1:7001/api
 
 ## ฟอร์มสมัครสมาชิก
 
-เปิดจากลิงก์ "สมัครสมาชิก" ใน modal เข้าสู่ระบบ
+เปิดจากลิงก์ "สมัครสมาชิก" ใน modal เข้าสู่ระบบ หรือเปิดตรงที่ `/register` ก็ได้
+
+ลิงก์แนะนำเพื่อน: `/register?ref=xxx&pref=xxxx` จะเก็บ `ref`, `pref` ไว้ใน sessionStorage (`ta-ref`, ตัวที่ไม่มีเป็น `null`)
+แล้วส่งไปพร้อมข้อมูลสมัคร ถ้าเปิดเว็บโดยไม่มี params จะใช้ค่าที่เก็บไว้เดิมในแท็บนั้น (ไม่มีเลยส่ง `null`)
+
+ตอนขึ้นเซิร์ฟเวอร์จริง ต้องตั้งให้ทุก path ที่ไม่ใช่ไฟล์ส่ง `index.html` (SPA fallback) เช่น nginx `try_files $uri /index.html;`
+ไม่งั้นเปิด `/register` ตรงๆ จะได้ 404 (`npm run dev` / `npm run preview` ทำให้อยู่แล้ว)
 
 1. กรอกเบอร์โทร 10 หลัก → `POST /member/checkphonenumber` `{ PhoneNumber }` ได้ `{ verify }`: `false` = แสดง "เบอร์นี้ถูกใช้งานแล้ว", `true` = ไปขั้นถัดไป
 2. กรอก ชื่อ, นามสกุล, ธนาคาร, เลขบัญชี (10–16 หลัก), ช่องทางที่รู้จัก, LINE ID (ไม่บังคับ), รหัสผ่าน และยืนยันรหัสผ่าน (ต้องตรงกัน 6–20 ตัวอักษร)
-   → `POST /member/register` `{ PhoneNumber, Fname, Lname, Channel, Password, LineId, BankCode, AccNumber }`
+   → `POST /member/register` `{ PhoneNumber, Fname, Lname, Channel, Password, LineId, BankCode, AccNumber, ref, pref }`
 3. ได้ `{ register: true, data }` → เก็บ `data` เป็น session เข้าสู่ระบบทันที (เหมือน login) แล้วกลับหน้าแรก;
    พร้อมเด้ง modal "สมัครสมาชิกสำเร็จ — ยินดีต้อนรับสู่ {company}"; `{ register: false }` → แสดง `msg` หรือ "สมัครสมาชิกไม่สำเร็จ"

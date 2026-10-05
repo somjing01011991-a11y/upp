@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { BankList, Channel } from '../data/register.js';
 import { checkPhone, register } from '../lib/api.js';
+import { loadReferral } from '../lib/session.js';
 import BankSelect from './BankSelect.jsx';
 import Spinner from './Spinner.jsx';
 
@@ -83,6 +84,7 @@ export default function RegisterForm({ onRegistered }) {
         LineId: form.LineId.trim(),
         BankCode: form.BankCode,
         AccNumber: form.AccNumber,
+        ...loadReferral(), // ref, pref from the /register?ref=&pref= link, null when absent
       });
       if (res.register === true && res.data) {
         onRegistered?.(res.data);

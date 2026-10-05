@@ -109,7 +109,7 @@ export async function checkPhone(PhoneNumber) {
 
 /**
  * Signup: POST {API_SERVER}/member/register with
- * { PhoneNumber, Fname, Lname, Channel, Password, LineId, BankCode, AccNumber }.
+ * { PhoneNumber, Fname, Lname, Channel, Password, LineId, BankCode, AccNumber, ref, pref }.
  * Resolves to the response — { register: true, data: { Username, …, accesstoken } } or { register: false, msg? }.
  */
 export async function register(body) {

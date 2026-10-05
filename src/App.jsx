@@ -6,7 +6,7 @@ import PromotionPage from './components/PromotionPage.jsx';
 import RegisterForm from './components/RegisterForm.jsx';
 import theme from './config/theme.json';
 import { web } from './data/session.js';
-import { clearSession, loadSession, saveSession, toHeaderUser } from './lib/session.js';
+import { captureReferral, clearSession, loadSession, saveSession, toHeaderUser } from './lib/session.js';
 import { fetchGames, fetchProviderTypes, fetchProviders, fetchWebConfig } from './lib/api.js';
 
 // หน้าของเมนูบาร์ที่ยังไม่ได้ทำ — แทนที่ด้วยหน้าจริง
@@ -20,6 +20,11 @@ function PlaceholderPage({ title }) {
     </div>
   );
 }
+
+// /register opens the signup page directly; its ?ref=&pref= go to sessionStorage for the signup body
+const REGISTER_PATH = /\/register\/?$/;
+const pageFromUrl = () => (REGISTER_PATH.test(window.location.pathname) ? 'signup' : 'home');
+captureReferral();
 
 function LoadingScreen() {
   return (
@@ -37,7 +42,7 @@ export default function App() {
   const [error, setError] = useState('');
   const [games, setGames] = useState({}); // { [providerCode]: Game[] | null } — missing = loading
   const [category, setCategory] = useState('slot');
-  const [page, setPage] = useState('home');
+  const [page, setPage] = useState(pageFromUrl);
   const [member, setMember] = useState(loadSession); // login response kept in sessionStorage; null = guest
   const [loginOpen, setLoginOpen] = useState(false);
   const [welcomeOpen, setWelcomeOpen] = useState(false); // signup success popup
@@ -68,6 +73,18 @@ export default function App() {
     setPage(k);
     return true;
   };
+
+  // keep the address bar in step with the signup page: /register while it is open, / otherwise
+  useEffect(() => {
+    const onSignupUrl = REGISTER_PATH.test(window.location.pathname);
+    if (page === 'signup' && !onSignupUrl) window.history.pushState(null, '', '/register');
+    else if (page !== 'signup' && onSignupUrl) window.history.pushState(null, '', '/');
+  }, [page]);
+  useEffect(() => {
+    const onPop = () => setPage(pageFromUrl());
+    window.addEventListener('popstate', onPop);
+    return () => window.removeEventListener('popstate', onPop);
+  }, []);
 
   // site config first (logo + colors); on failure keep the built-in theme and logo
   useEffect(() => {
