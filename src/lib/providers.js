@@ -2,7 +2,7 @@
  * Accepts the provider API response ({ msg, data }) or just its `data`, where `data` is either
  * a flat list (grouped here by lowercased providerType: SLOT → slot, AFB → afb) or already keyed.
  * Drops non-ACTIVE providers and duplicates inside each key.
- * `types` (e.g. ['SLOT', 'AFB'] from the provider-type API) keeps only those keys; null keeps all.
+ * `types` (lowercased providerTypes listed by the categories API) keeps only those keys; null keeps all.
  */
 export function normalizeProviders(resp, types = null) {
   let data = resp && resp.data ? resp.data : resp || {};
