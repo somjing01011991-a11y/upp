@@ -58,6 +58,7 @@ VITE_API_SERVER=http://127.0.0.1:7001/api
   - ไม่เจอทั้งสองแบบ → เข้าหมวด "เกมอื่นๆ" (`key: "other"`)
 - เมนูโปรโมชั่นโหลดจาก `GET {VITE_API_SERVER}/member/promotion` แสดงรูป `media.coverImage` กับ `bonusName` คลิกแล้วเปิด modal แสดง `bonusDescription` (คงการขึ้นบรรทัดใหม่)
 - เข้าสู่ระบบ: ปุ่ม "เข้าสู่ระบบ" มุมบน และเมนู "สมัครสมาชิก" (แทนโปรไฟล์ตอนยังไม่ล็อกอิน) เปิด modal กรอก PhoneNumber, Password → `POST {VITE_API_SERVER}/member/login` ถ้า `login: false` แสดง `msg` ถ้าสำเร็จเก็บ response ไว้ใน `sessionStorage` (`src/lib/session.js`) แล้วแสดง Username, Ranking, เครดิต, กระเป๋าเงิน, ค่าคอมมิชชั่น กดรูปโปรไฟล์เพื่อออกจากระบบ
+- ยอดคงเหลือ: ระหว่างล็อกอินจะเรียก `POST {VITE_API_SERVER}/member/balance` (ตั้ง path ที่ `BALANCE_PATH` ใน `src/lib/api.js`) ทุก 10 วินาที ส่ง `{ Username, accesstoken }` จาก session แล้วอัปเดต `totalWallet`, `CraditGames`, `totalCommission` ถ้าได้ `{ msg: false, access: "denied" }` จะล้าง session แล้วเปิด modal เข้าสู่ระบบ
 - ใส่ `VITE_API_SERVER=` (ค่าว่าง) เพื่อใช้ข้อมูลตัวอย่างแทน
 - เซิร์ฟเวอร์ต้องเปิด CORS ให้ต้นทางของหน้าเว็บ (เช่น `http://localhost:5173`)
 - คลิกการ์ดค่ายแล้วโหลดรายชื่อเกมจาก `GET {VITE_API_SERVER}/member/gamelistprovider/{provider}` แสดงเฉพาะเกม `status: ACTIVE` ใช้รูป `image.square` ถ้าค่ายไม่มีเกมหรือโหลดไม่สำเร็จจะแสดงปุ่มเข้าสู่ล็อบบี้แทน

@@ -77,6 +77,24 @@ export async function fetchWebConfig() {
   return (Array.isArray(json.data) ? json.data[0] : json.data) || null;
 }
 
+/** Balance refresh endpoint (under API_SERVER). */
+export const BALANCE_PATH = '/member/balance';
+
+/**
+ * Member balance: POST {API_SERVER}{BALANCE_PATH} with { Username, accesstoken } from the session.
+ * Resolves to { msg: true, data: { totalWallet, CraditGames, totalCommission } } or { msg: false, access: 'denied' }.
+ */
+export async function fetchBalance(Username, accesstoken) {
+  const res = await fetch(`${API_SERVER}${BALANCE_PATH}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ Username, accesstoken }),
+  });
+  const json = await res.json().catch(() => null);
+  if (!json) throw new Error(`Balance API ${res.status}`);
+  return json;
+}
+
 /**
  * Member login: POST {API_SERVER}/member/login with { PhoneNumber, Password }.
  * Resolves to the response — { login: true, Username, Fname, …, accesstoken } or { login: false, msg }.

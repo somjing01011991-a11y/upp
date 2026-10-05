@@ -7,7 +7,7 @@ import RegisterForm from './components/RegisterForm.jsx';
 import theme from './config/theme.json';
 import { web } from './data/session.js';
 import { captureReferral, clearSession, loadSession, saveSession, toHeaderUser } from './lib/session.js';
-import { fetchGames, fetchCategories, fetchProviders, fetchWebConfig } from './lib/api.js';
+import { fetchBalance, fetchGames, fetchCategories, fetchProviders, fetchWebConfig } from './lib/api.js';
 
 // หน้าของเมนูบาร์ที่ยังไม่ได้ทำ — แทนที่ด้วยหน้าจริง
 const PAGE_TITLE = { wallet: 'ฝากถอน', promo: 'โปรโมชั่น', profile: 'โปรไฟล์', contact: 'ติดต่อ' };
@@ -20,6 +20,8 @@ function PlaceholderPage({ title }) {
     </div>
   );
 }
+
+const BALANCE_INTERVAL_MS = 10_000;
 
 // /register opens the signup page directly; its ?ref=&pref= go to sessionStorage for the signup body
 const REGISTER_PATH = /\/register\/?$/;
@@ -73,6 +75,41 @@ export default function App() {
     setPage(k);
     return true;
   };
+
+  // refresh the header balance every 10s while logged in; a denied token logs out and reopens login
+  const username = member?.Username;
+  const token = member?.accesstoken;
+  useEffect(() => {
+    if (!username || !token) return undefined;
+    let stopped = false;
+    const tick = async () => {
+      try {
+        const res = await fetchBalance(username, token);
+        if (stopped) return;
+        if (res.msg === true && res.data) {
+          const { totalWallet, CraditGames, totalCommission } = res.data;
+          setMember((m) => {
+            if (!m || m.accesstoken !== token) return m;
+            const next = { ...m, totalWallet, CraditGames, totalCommission };
+            saveSession(next);
+            return next;
+          });
+        } else if (res.msg === false && res.access === 'denied') {
+          clearSession();
+          setMember(null);
+          setPage('home');
+          setLoginOpen(true);
+        }
+      } catch {
+        // network hiccup: keep the last balance and try again next tick
+      }
+    };
+    const id = setInterval(tick, BALANCE_INTERVAL_MS);
+    return () => {
+      stopped = true;
+      clearInterval(id);
+    };
+  }, [username, token]);
 
   // keep the address bar in step with the signup page: /register while it is open, / otherwise
   useEffect(() => {
