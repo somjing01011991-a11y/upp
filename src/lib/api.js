@@ -126,6 +126,21 @@ export async function fetchWallet(Username, accesstoken) {
 }
 
 /**
+ * Bonus options for a wallet item: POST {API_SERVER}/member/selectbonus with { Username, accesstoken, refID }.
+ * Resolves to { msg: true, bonus: [...], nobonus: { amount, maxWithdraw, Description } } or { msg: false, access? }.
+ */
+export async function selectBonus(body) {
+  const res = await fetch(`${API_SERVER}/member/selectbonus`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+  const json = await res.json().catch(() => null);
+  if (!json) throw new Error(`Select bonus API ${res.status}`);
+  return json;
+}
+
+/**
  * Member login: POST {API_SERVER}/member/login with { PhoneNumber, Password }.
  * Resolves to the response — { login: true, Username, Fname, …, accesstoken } or { login: false, msg }.
  */

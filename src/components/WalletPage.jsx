@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { fetchWallet } from '../lib/api.js';
 import { formatAmount } from '../lib/providers.js';
+import BonusSelectModal from './BonusSelectModal.jsx';
 import Spinner from './Spinner.jsx';
 
 const pad = (n) => String(n).padStart(2, '0');
@@ -13,10 +14,13 @@ export function formatDateTime(iso) {
 
 /**
  * กระเป๋าเงิน (/wallet): POST /member/wallet with the session's Username + accesstoken,
- * one row per item — amount, date, "ใช้งาน" button. `access: denied` → onDenied (logout + login).
+ * one row per item — amount, date, "ใช้งาน" button (opens the bonus choice).
+ * `access: denied` → onDenied (logout + login). onUse(item, bonusID | null) after a choice.
  */
 export default function WalletPage({ member, onLogin, onDenied, onUse }) {
   const [list, setList] = useState(null);
+  const [using, setUsing] = useState(null); // wallet item whose bonus choice is open
+  const ref = useRef(null);
   const [error, setError] = useState('');
   const username = member?.Username;
   const token = member?.accesstoken;
@@ -40,7 +44,7 @@ export default function WalletPage({ member, onLogin, onDenied, onUse }) {
   }, [username, token]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <section className="ta-section ta-wallet">
+    <section className="ta-section ta-wallet" ref={ref}>
       <h2 className="ta-wallet-title">กระเป๋าเงิน</h2>
       {!member ? (
         <div className="ta-wallet-note">
@@ -65,12 +69,25 @@ export default function WalletPage({ member, onLogin, onDenied, onUse }) {
                   {formatDateTime(w.TransactionDate)}
                 </time>
               </div>
-              <button type="button" className="ta-btn ta-wallet-use" onClick={() => onUse?.(w)}>
+              <button type="button" className="ta-btn ta-wallet-use" onClick={() => setUsing(w)}>
                 ใช้งาน
               </button>
             </li>
           ))}
         </ul>
+      )}
+      {using && member && (
+        <BonusSelectModal
+          member={member}
+          item={using}
+          container={ref.current?.closest('.ta-root') || document.body}
+          onDenied={onDenied}
+          onClose={() => setUsing(null)}
+          onSelect={(bonusID) => {
+            setUsing(null);
+            onUse?.(using, bonusID);
+          }}
+        />
       )}
     </section>
   );

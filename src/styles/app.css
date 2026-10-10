@@ -588,3 +588,21 @@
 .ta-deposit-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .ta-deposit-actions .ta-btn { height: 44px; margin: 0; }
 .ta-btn.ta-deposit-close { background: var(--c-raised); border-color: var(--c-line); color: var(--c-text) !important; }
+
+/* bonus choice (wallet "ใช้งาน") */
+.ta-bonus-modal { width: min(560px, 100%); }
+.ta-bonus-body { padding: 0 16px 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+.ta-bonus-section { margin: 8px 0 0; font-size: 15px; color: var(--c-muted); }
+.ta-bonus-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.ta-bonus { padding: 12px 14px; background: var(--c-card); border: 1px solid var(--c-line); border-radius: var(--r-md); display: flex; flex-direction: column; gap: 8px; }
+.ta-bonus-head { display: flex; align-items: center; gap: 10px; }
+.ta-bonus-head h4 { margin: 0; font-size: 15px; line-height: 1.4; }
+.ta-bonus-cover { flex: none; width: 56px; height: 56px; border-radius: var(--r-sm); overflow: hidden; background: var(--c-raised); display: grid; place-items: center; }
+.ta-bonus-cover img { width: 100%; height: 100%; object-fit: cover; }
+.ta-bonus-rows { margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 4px 12px; }
+.ta-bonus-row { display: flex; flex-direction: column; min-width: 0; }
+.ta-bonus-row dt { font-size: 11px; color: var(--c-muted); }
+.ta-bonus-row dd { margin: 0; font-size: 14px; font-weight: 600; }
+.ta-bonus-desc { margin: 0; padding: 10px; white-space: pre-line; font-size: 13px; line-height: 1.6; color: var(--c-muted); background: var(--c-surface); border-radius: var(--r-sm); }
+.ta-bonus-actions { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.ta-bonus-pick { height: 34px; padding: 0 22px; margin-left: auto; }

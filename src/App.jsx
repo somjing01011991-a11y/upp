@@ -309,7 +309,7 @@ export default function App() {
           member={member}
           onLogin={() => setLoginOpen(true)}
           onDenied={denied}
-          onUse={(w) => console.log('use wallet item', w.refID)} // TODO: ยังไม่ได้กำหนดว่าปุ่ม "ใช้งาน" ทำอะไร
+          onUse={(w, bonusID) => console.log('use wallet item', w.refID, bonusID)} // TODO: ยังไม่ได้กำหนด API ยืนยันการเลือกโบนัส
         />
       ) : page === 'signup' ? <RegisterForm onRegistered={registered} /> : <PlaceholderPage title={PAGE_TITLE[page]} />}
     </GameApp>
