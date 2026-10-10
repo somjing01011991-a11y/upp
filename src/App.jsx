@@ -56,6 +56,7 @@ export default function App() {
   const [loginOpen, setLoginOpen] = useState(false);
   const [welcomeOpen, setWelcomeOpen] = useState(false); // signup success popup
   const user = useMemo(() => toHeaderUser(member), [member]);
+  const refreshBalance = useRef(() => {}); // check the balance now (set while logged in)
   const memberRef = useRef(member);
   memberRef.current = member;
 
@@ -122,7 +123,9 @@ export default function App() {
       }
     };
     const id = setInterval(tick, BALANCE_INTERVAL_MS);
+    refreshBalance.current = tick;
     return () => {
+      refreshBalance.current = () => {};
       stopped = true;
       clearInterval(id);
     };
@@ -309,7 +312,7 @@ export default function App() {
           member={member}
           onLogin={() => setLoginOpen(true)}
           onDenied={denied}
-          onUse={(w, bonusID) => console.log('use wallet item', w.refID, bonusID)} // TODO: ยังไม่ได้กำหนด API ยืนยันการเลือกโบนัส
+          onUse={() => refreshBalance.current()} // credit changes right after a wallet item is used
         />
       ) : page === 'signup' ? <RegisterForm onRegistered={registered} /> : <PlaceholderPage title={PAGE_TITLE[page]} />}
     </GameApp>

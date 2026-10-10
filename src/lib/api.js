@@ -141,6 +141,21 @@ export async function selectBonus(body) {
 }
 
 /**
+ * Use a wallet item: POST {API_SERVER}/member/usewallet with { Username, accesstoken, refID, bonusID } (bonusID null = no bonus).
+ * Resolves to { msg: true } or { msg: false, reason? }.
+ */
+export async function useWallet(body) {
+  const res = await fetch(`${API_SERVER}/member/usewallet`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+  const json = await res.json().catch(() => null);
+  if (!json) throw new Error(`Use wallet API ${res.status}`);
+  return json;
+}
+
+/**
  * Member login: POST {API_SERVER}/member/login with { PhoneNumber, Password }.
  * Resolves to the response — { login: true, Username, Fname, …, accesstoken } or { login: false, msg }.
  */

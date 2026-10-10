@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { fetchWallet } from '../lib/api.js';
 import { formatAmount } from '../lib/providers.js';
 import BonusSelectModal from './BonusSelectModal.jsx';
@@ -15,11 +16,13 @@ export function formatDateTime(iso) {
 /**
  * กระเป๋าเงิน (/wallet): POST /member/wallet with the session's Username + accesstoken,
  * one row per item — amount, date, "ใช้งาน" button (opens the bonus choice).
- * `access: denied` → onDenied (logout + login). onUse(item, bonusID | null) after a choice.
+ * `access: denied` → onDenied (logout + login). onUse(item, bonusID | null) after a successful use.
  */
 export default function WalletPage({ member, onLogin, onDenied, onUse }) {
   const [list, setList] = useState(null);
   const [using, setUsing] = useState(null); // wallet item whose bonus choice is open
+  const [done, setDone] = useState(false); // "ทำรายการสำเร็จ" popup
+  const [reload, setReload] = useState(0);
   const ref = useRef(null);
   const [error, setError] = useState('');
   const username = member?.Username;
@@ -28,7 +31,7 @@ export default function WalletPage({ member, onLogin, onDenied, onUse }) {
   useEffect(() => {
     if (!username || !token) return undefined;
     let cancelled = false;
-    setList(null);
+    if (!reload) setList(null); // keep the old list on screen while refreshing after a use
     setError('');
     fetchWallet(username, token)
       .then((res) => {
@@ -41,7 +44,7 @@ export default function WalletPage({ member, onLogin, onDenied, onUse }) {
     return () => {
       cancelled = true;
     };
-  }, [username, token]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [username, token, reload]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <section className="ta-section ta-wallet" ref={ref}>
@@ -76,6 +79,23 @@ export default function WalletPage({ member, onLogin, onDenied, onUse }) {
           ))}
         </ul>
       )}
+      {done &&
+        createPortal(
+          <div className="ta-modal-backdrop" onClick={() => setDone(false)}>
+            <div
+              className="ta-modal ta-alert-modal"
+              role="alertdialog"
+              aria-modal="true"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <p>ทำรายการสำเร็จ</p>
+              <button type="button" className="ta-btn ta-login-submit" onClick={() => setDone(false)} autoFocus>
+                ตกลง
+              </button>
+            </div>
+          </div>,
+          ref.current?.closest('.ta-root') || document.body,
+        )}
       {using && member && (
         <BonusSelectModal
           member={member}
@@ -83,8 +103,10 @@ export default function WalletPage({ member, onLogin, onDenied, onUse }) {
           container={ref.current?.closest('.ta-root') || document.body}
           onDenied={onDenied}
           onClose={() => setUsing(null)}
-          onSelect={(bonusID) => {
+          onDone={(bonusID) => {
             setUsing(null);
+            setDone(true);
+            setReload((n) => n + 1); // the used item drops off the list
             onUse?.(using, bonusID);
           }}
         />

@@ -82,7 +82,7 @@ VITE_API_SERVER=http://127.0.0.1:7001/api
 กดช่อง "กระเป๋าเงิน" บน header หรือเมนู "ฝากถอน" (ยังไม่ล็อกอิน = เปิด modal เข้าสู่ระบบ)
 → `POST {VITE_API_SERVER}/member/wallet` `{ Username, accesstoken }` แสดงทีละรายการ: ยอด, วันที่ `Y-m-d H:mm` (เวลาเครื่องผู้ใช้), ปุ่ม "ใช้งาน"
 ถ้าเช็คยอดทุก 10 วินาทีแล้วกระเป๋าเงินเพิ่มขึ้น จะเด้ง modal "มียอด ฿x เข้ากระเป๋าเงิน" (ปุ่ม คลิกดู → `/wallet`, ปิด) แม้อยู่ในเกม
-ปุ่ม "ใช้งาน" → `POST /member/selectbonus` `{ Username, accesstoken, refID }` แล้วเปิด modal ให้เลือก "ไม่รับโบนัส" (`nobonus`) หรือโบนัสใน `bonus[]` (ปุ่ม "เลือก" ยังไม่ส่ง API — `onUse` ใน `src/App.jsx`) ไม่มีรายการแสดง "ไม่มีรายการ", `access: "denied"` = ออกจากระบบแล้วเปิด modal เข้าสู่ระบบ
+ปุ่ม "ใช้งาน" → `POST /member/selectbonus` `{ Username, accesstoken, refID }` แล้วเปิด modal ให้เลือก "ไม่รับโบนัส" (`nobonus`) หรือโบนัสใน `bonus[]` กด "เลือก" แล้วขึ้นหน้ายืนยันพร้อมรายละเอียด กด "ยืนยัน" → `POST /member/usewallet` `{ Username, accesstoken, refID, bonusID }` (ไม่รับโบนัส = `bonusID: null`) สำเร็จขึ้น "ทำรายการสำเร็จ" แล้วโหลดรายการกับยอดใหม่ ไม่สำเร็จแสดง `reason` หรือ "ทำรายการไม่สำเร็จ" ไม่มีรายการแสดง "ไม่มีรายการ", `access: "denied"` = ออกจากระบบแล้วเปิด modal เข้าสู่ระบบ
 
 ## เข้าเล่นเกม
 
