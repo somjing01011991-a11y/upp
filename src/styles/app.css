@@ -587,4 +587,4 @@
 .ta-deposit-amount { color: var(--c-positive); }
 .ta-deposit-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .ta-deposit-actions .ta-btn { height: 44px; margin: 0; }
-.ta-deposit-close { background: var(--c-raised); color: var(--c-text); }
+.ta-btn.ta-deposit-close { background: var(--c-raised); border-color: var(--c-line); color: var(--c-text) !important; }
