@@ -127,6 +127,7 @@ function AppInner({
         onLogin={onLogin}
         onLogout={onLogout}
         onWallet={() => onNavigate?.('wallet') !== false && setNavKey('wallet')}
+        onCredit={() => onNavigate?.('deposit') !== false && setNavKey('deposit')}
       />
 
       <div className="ta-body">
