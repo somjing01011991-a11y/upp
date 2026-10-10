@@ -3,6 +3,7 @@ import { demoGames } from '../lib/providers.js';
 import GameCard from './GameCard.jsx';
 import Icon from './Icon.jsx';
 import Img from './Img.jsx';
+import Spinner from './Spinner.jsx';
 import TierBadge from './TierBadge.jsx';
 
 function ProviderLogo({ provider: p }) {
@@ -17,20 +18,24 @@ function ProviderLogo({ provider: p }) {
   );
 }
 
-/** One provider with N games (layout.gamesPerProvider). detailStatus:false → lobby launch. */
-export default function ProviderSection({ provider: p = {}, games, count, onPlay, onViewAll }) {
+/**
+ * One provider with N games (layout.gamesPerProvider). detailStatus:false → lobby launch.
+ * `full`: every game of the provider (games === undefined → loading, empty → lobby button).
+ */
+export default function ProviderSection({ provider: p = {}, games, count, full, onPlay, onViewAll }) {
   const { layout, texts } = useConfig();
   const n = count || layout.gamesPerProvider || 8;
-  const list = (games?.length ? games : demoGames(p, n)).slice(0, n);
-  const lobby = p.detailStatus === false;
+  const list = full ? games || [] : (games?.length ? games : demoGames(p, n)).slice(0, n);
+  const loading = full && games === undefined;
+  const lobby = p.detailStatus === false || (full && !loading && list.length === 0);
 
   return (
-    <section className="ta-section" aria-label={p.providerName}>
+    <section className={full ? 'ta-section ta-section--full' : 'ta-section'} aria-label={p.providerName}>
       <div className="ta-section-head">
         <ProviderLogo provider={p} />
         <span className="ta-section-name">{p.providerName}</span>
         <TierBadge tier={p.providerTier} />
-        {!lobby && (
+        {!lobby && !full && (
           <button type="button" className="ta-viewall" onClick={() => onViewAll?.(p)}>
             {texts.viewAll}
             <Icon name="chevron" />
@@ -38,7 +43,9 @@ export default function ProviderSection({ provider: p = {}, games, count, onPlay
         )}
       </div>
 
-      {lobby ? (
+      {loading ? (
+        <Spinner block label={texts.loading} />
+      ) : lobby ? (
         <div className="ta-lobby">
           <span>{texts.lobbyHint}</span>
           <button type="button" className="ta-btn" onClick={() => onPlay?.(null, p)}>

@@ -1,37 +1,202 @@
 import sampleProviders from '../data/sampleProviders.js';
 
-const PROVIDER_API = import.meta.env.VITE_PROVIDER_API;
-const GAMES_API = import.meta.env.VITE_GAMES_API;
+import { API_SERVER } from '../config/api.js';
 
-/** Provider list. Uses VITE_PROVIDER_API when set, otherwise the bundled sample. */
+/**
+ * Provider list: GET {API_SERVER}/member/gameprovider → { msg: true, data: [provider, ...] }.
+ * Uses the bundled sample when API_SERVER is empty.
+ */
 export async function fetchProviders() {
-  if (!PROVIDER_API) return sampleProviders;
-  const res = await fetch(PROVIDER_API);
+  if (!API_SERVER) return sampleProviders;
+  const res = await fetch(`${API_SERVER}/member/gameprovider`);
   if (!res.ok) throw new Error(`Provider API ${res.status}`);
   const json = await res.json();
-  if (json.code !== 0) throw new Error(json.msg || 'Provider API error');
+  if (json.msg !== true) throw new Error(typeof json.msg === 'string' ? json.msg : 'Provider API error');
   return json;
 }
 
 /**
- * Games of one provider → [{ gameCode, gameName, imageURL, tag }].
- * Returns null when VITE_GAMES_API is not set (the UI then shows placeholders).
- * Adjust the mapping below to the real response shape once it is known.
+ * Sidebar grouping: GET {API_SERVER}/member/categories → { msg: true, data: [{ providerType, category }, ...] }.
+ * Returns null (use theme.json as is) when API_SERVER is empty.
+ */
+export async function fetchCategories() {
+  if (!API_SERVER) return null;
+  const res = await fetch(`${API_SERVER}/member/categories`);
+  if (!res.ok) throw new Error(`Categories API ${res.status}`);
+  const json = await res.json();
+  if (json.msg !== true || !Array.isArray(json.data)) {
+    throw new Error(typeof json.msg === 'string' ? json.msg : 'Categories API error');
+  }
+  return json.data;
+}
+
+/**
+ * Games of one provider: GET {API_SERVER}/member/gamelistprovider/{provider} → { msg: true, data: [game, ...] }.
+ * Returns [{ gameCode, gameName, imageURL, tag }] of ACTIVE games, or null when API_SERVER is empty
+ * (the UI then shows placeholders).
  */
 export async function fetchGames(provider) {
-  if (!GAMES_API) return null;
-  const url = GAMES_API.replace('{provider}', encodeURIComponent(provider.provider)).replace(
-    '{type}',
-    encodeURIComponent(provider.providerType),
-  );
-  const res = await fetch(url);
-  if (!res.ok) return null;
+  if (!API_SERVER) return null;
+  const res = await fetch(`${API_SERVER}/member/gamelistprovider/${encodeURIComponent(provider.provider)}`);
+  if (!res.ok) throw new Error(`Game list API ${res.status}`);
   const json = await res.json();
-  const list = Array.isArray(json) ? json : json.data || [];
-  return list.map((g) => ({
-    gameCode: g.gameCode ?? g.code ?? g.id,
-    gameName: g.gameName ?? g.name,
-    imageURL: g.imageURL ?? g.image ?? g.imgUrl ?? '',
-    tag: g.tag ?? '',
-  }));
+  if (json.msg !== true) throw new Error(typeof json.msg === 'string' ? json.msg : 'Game list API error');
+  return (json.data || [])
+    .filter((g) => g && (!g.status || g.status === 'ACTIVE'))
+    .map((g) => ({
+      gameCode: g.id,
+      gameName: g.gameName,
+      imageURL: g.image?.square || g.image?.horizontal || g.image?.vertical || '',
+      tag: '',
+    }));
+}
+
+/**
+ * Promotions: GET {API_SERVER}/member/promotion → { msg: true, data: [promotion, ...] }.
+ * Returns [] when API_SERVER is empty.
+ */
+export async function fetchPromotions() {
+  if (!API_SERVER) return [];
+  const res = await fetch(`${API_SERVER}/member/promotion`);
+  if (!res.ok) throw new Error(`Promotion API ${res.status}`);
+  const json = await res.json();
+  if (json.msg !== true) throw new Error(typeof json.msg === 'string' ? json.msg : 'Promotion API error');
+  return json.data || [];
+}
+
+/**
+ * Site config loaded before the page renders: GET {API_SERVER}/member/webconfig → { msg: true, data: [{ company, logo, colors }] }.
+ * Returns data[0], or null when API_SERVER is empty.
+ */
+export async function fetchWebConfig() {
+  if (!API_SERVER) return null;
+  const res = await fetch(`${API_SERVER}/member/webconfig`);
+  if (!res.ok) throw new Error(`Web config API ${res.status}`);
+  const json = await res.json();
+  if (json.msg !== true) throw new Error(typeof json.msg === 'string' ? json.msg : 'Web config API error');
+  return (Array.isArray(json.data) ? json.data[0] : json.data) || null;
+}
+
+/** Balance refresh endpoint (under API_SERVER). */
+export const BALANCE_PATH = '/member/balance';
+
+/**
+ * Member balance: POST {API_SERVER}{BALANCE_PATH} with { Username, accesstoken } from the session.
+ * Resolves to { msg: true, data: { totalWallet, CraditGames, totalCommission } } or { msg: false, access: 'denied' }.
+ */
+export async function fetchBalance(Username, accesstoken) {
+  const res = await fetch(`${API_SERVER}${BALANCE_PATH}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ Username, accesstoken }),
+  });
+  const json = await res.json().catch(() => null);
+  if (!json) throw new Error(`Balance API ${res.status}`);
+  return json;
+}
+
+/**
+ * Game launch: POST {API_SERVER}/member/playgame with { Username, accesstoken, provider, gameID, redirectUrl }.
+ * Resolves to { msg: true, url } or { msg: false, error? }.
+ */
+export async function playGame(body) {
+  const res = await fetch(`${API_SERVER}/member/playgame`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+  const json = await res.json().catch(() => null);
+  if (!json) throw new Error(`Play game API ${res.status}`);
+  return json;
+}
+
+/**
+ * Wallet items: POST {API_SERVER}/member/wallet with { Username, accesstoken }.
+ * Resolves to { msg: true, data: [{ amount, TransactionDate, refID }] } or { msg: false, access: 'denied' }.
+ */
+export async function fetchWallet(Username, accesstoken) {
+  const res = await fetch(`${API_SERVER}/member/wallet`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ Username, accesstoken }),
+  });
+  const json = await res.json().catch(() => null);
+  if (!json) throw new Error(`Wallet API ${res.status}`);
+  return json;
+}
+
+/**
+ * Bonus options for a wallet item: POST {API_SERVER}/member/selectbonus with { Username, accesstoken, refID }.
+ * Resolves to { msg: true, bonus: [...], nobonus: { amount, maxWithdraw, Description } } or { msg: false, access? }.
+ */
+export async function selectBonus(body) {
+  const res = await fetch(`${API_SERVER}/member/selectbonus`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+  const json = await res.json().catch(() => null);
+  if (!json) throw new Error(`Select bonus API ${res.status}`);
+  return json;
+}
+
+/**
+ * Use a wallet item: POST {API_SERVER}/member/usewallet with { Username, accesstoken, refID, bonusID } (bonusID null = no bonus).
+ * Resolves to { msg: true } or { msg: false, reason? }.
+ */
+export async function useWallet(body) {
+  const res = await fetch(`${API_SERVER}/member/usewallet`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+  const json = await res.json().catch(() => null);
+  if (!json) throw new Error(`Use wallet API ${res.status}`);
+  return json;
+}
+
+/**
+ * Member login: POST {API_SERVER}/member/login with { PhoneNumber, Password }.
+ * Resolves to the response — { login: true, Username, Fname, …, accesstoken } or { login: false, msg }.
+ */
+export async function login(PhoneNumber, Password) {
+  const res = await fetch(`${API_SERVER}/member/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ PhoneNumber, Password }),
+  });
+  const json = await res.json().catch(() => null);
+  if (!json) throw new Error(`Login API ${res.status}`);
+  return json;
+}
+
+/**
+ * Phone check before signup: POST {API_SERVER}/member/checkphonenumber with { PhoneNumber }.
+ * Response { verify: true } = not registered yet; false = already used.
+ */
+export async function checkPhone(PhoneNumber) {
+  const res = await fetch(`${API_SERVER}/member/checkphonenumber`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ PhoneNumber }),
+  });
+  const json = await res.json().catch(() => null);
+  if (!json || typeof json.verify !== 'boolean') throw new Error(`Check phone API ${res.status}`);
+  return json.verify;
+}
+
+/**
+ * Signup: POST {API_SERVER}/member/register with
+ * { PhoneNumber, Fname, Lname, Channel, Password, LineId, BankCode, AccNumber, ref, pref }.
+ * Resolves to the response — { register: true, data: { Username, …, accesstoken } } or { register: false, msg? }.
+ */
+export async function register(body) {
+  const res = await fetch(`${API_SERVER}/member/register`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+  const json = await res.json().catch(() => null);
+  if (!json) throw new Error(`Register API ${res.status}`);
+  return json;
 }

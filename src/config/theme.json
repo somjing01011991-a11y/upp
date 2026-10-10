@@ -34,6 +34,7 @@
     "gameColumns": 4,
     "gameColumnsWide": 8,
     "gameRatio": "1 / 1",
+    "providerRatio": "4 / 3",
     "gamesPerProvider": 8
   },
   "header": { "showCredit": true, "showWallet": true, "currency": "฿" },
@@ -45,7 +46,31 @@
     "enter": "เข้าเล่น",
     "lobby": "เข้าสู่ล็อบบี้",
     "lobbyHint": "ค่ายนี้เข้าเล่นผ่านล็อบบี้",
-    "providers": "ค่าย"
+    "providers": "ค่าย",
+    "login": "เข้าสู่ระบบ",
+    "logout": "ออกจากระบบ",
+    "register": "สมัครสมาชิก",
+    "noAccount": "ยังไม่มีบัญชี?",
+    "account": "บัญชีของฉัน",
+    "commission": "ค่าคอมมิชชั่น",
+    "phone": "เบอร์โทรศัพท์",
+    "password": "รหัสผ่าน",
+    "loggingIn": "กำลังเข้าสู่ระบบ…",
+    "loginFailed": "เข้าสู่ระบบไม่สำเร็จ กรุณาลองใหม่",
+    "gamesUnit": "เกม",
+    "games": "ดูเกม",
+    "back": "กลับไปหน้าค่าย",
+    "loading": "กำลังโหลดเกม…",
+    "toTop": "กลับขึ้นด้านบน",
+    "searchGames": "ค้นหาชื่อเกม",
+    "noGamesFound": "ไม่พบเกมที่ค้นหา",
+    "searchProviders": "ค้นหาชื่อค่ายเกม",
+    "noProvidersFound": "ไม่พบค่ายเกมที่ค้นหา",
+    "promotions": "โปรโมชั่น",
+    "promoLoading": "กำลังโหลดโปรโมชั่น…",
+    "promoEmpty": "ยังไม่มีโปรโมชั่น",
+    "promoError": "โหลดโปรโมชั่นไม่สำเร็จ",
+    "close": "ปิด"
   },
   "categories": [
     { "key": "slot", "label": "สล็อต", "icon": "slot", "cover": "", "sources": ["slot"], "display": "games" },
@@ -57,13 +82,14 @@
     { "key": "poker", "label": "โป๊กเกอร์", "icon": "poker", "cover": "", "sources": ["poker"], "display": "providers" },
     { "key": "cock", "label": "ไก่ชน", "icon": "cock", "cover": "", "sources": ["cock"], "display": "providers" },
     { "key": "esport", "label": "อีสปอร์ต", "icon": "esport", "cover": "", "sources": ["esport"], "display": "providers" },
-    { "key": "trade", "label": "เทรด", "icon": "trade", "cover": "", "sources": ["trade"], "display": "providers" }
+    { "key": "trade", "label": "เทรด", "icon": "trade", "cover": "", "sources": ["trade"], "display": "providers" },
+    { "key": "other", "label": "เกมอื่นๆ", "icon": "grid", "cover": "", "sources": [], "display": "providers" }
   ],
   "nav": [
-    { "key": "wallet", "label": "ฝากถอน", "icon": "wallet" },
+    { "key": "deposit", "label": "ฝากถอน", "icon": "wallet" },
     { "key": "promo", "label": "โปรโมชั่น", "icon": "gift" },
     { "key": "home", "label": "หน้าแรก", "icon": "home", "primary": true },
-    { "key": "profile", "label": "โปรไฟล์", "icon": "user" },
+    { "key": "profile", "label": "โปรไฟล์", "icon": "user", "guest": { "key": "register", "label": "สมัครสมาชิก" } },
     { "key": "contact", "label": "ติดต่อ", "icon": "chat" }
   ]
 }
