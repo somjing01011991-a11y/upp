@@ -77,6 +77,12 @@ VITE_API_SERVER=http://127.0.0.1:7001/api
 | `categories[]` | หมวดใน Sidebar: `label`, `icon`, `cover` (URL รูปปก), `sources` (คีย์ใน `data` ของ API), `display` (`games` / `providers`) |
 | `nav[]` | เมนูบาร์ล่าง (`primary: true` = ปุ่มกลมตรงกลาง) |
 
+## กระเป๋าเงิน (`/wallet`)
+
+กดช่อง "กระเป๋าเงิน" บน header หรือเมนู "ฝากถอน" (ยังไม่ล็อกอิน = เปิด modal เข้าสู่ระบบ)
+→ `POST {VITE_API_SERVER}/member/wallet` `{ Username, accesstoken }` แสดงทีละรายการ: ยอด, วันที่ `Y-m-d H:mm` (เวลาเครื่องผู้ใช้), ปุ่ม "ใช้งาน"
+(ยังไม่ได้กำหนดว่าปุ่มทำอะไร — `onUse` ใน `src/App.jsx`) ไม่มีรายการแสดง "ไม่มีรายการ", `access: "denied"` = ออกจากระบบแล้วเปิด modal เข้าสู่ระบบ
+
 ## เข้าเล่นเกม
 
 - ยังไม่ล็อกอิน: กดเกมแล้วเปิด modal เข้าสู่ระบบ

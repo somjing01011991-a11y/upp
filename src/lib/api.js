@@ -111,6 +111,21 @@ export async function playGame(body) {
 }
 
 /**
+ * Wallet items: POST {API_SERVER}/member/wallet with { Username, accesstoken }.
+ * Resolves to { msg: true, data: [{ amount, TransactionDate, refID }] } or { msg: false, access: 'denied' }.
+ */
+export async function fetchWallet(Username, accesstoken) {
+  const res = await fetch(`${API_SERVER}/member/wallet`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ Username, accesstoken }),
+  });
+  const json = await res.json().catch(() => null);
+  if (!json) throw new Error(`Wallet API ${res.status}`);
+  return json;
+}
+
+/**
  * Member login: POST {API_SERVER}/member/login with { PhoneNumber, Password }.
  * Resolves to the response — { login: true, Username, Fname, …, accesstoken } or { login: false, msg }.
  */

@@ -68,7 +68,7 @@ function AvatarMenu({ initial, onLogout }) {
 }
 
 /** Zone 1 — logo + site name, credit / wallet / commission, user card. No `user` = guest: a login button instead. */
-const AppHeader = forwardRef(function AppHeader({ web = {}, user, homeHref = '#', onBrandClick, onLogin, onLogout }, ref) {
+const AppHeader = forwardRef(function AppHeader({ web = {}, user, homeHref = '#', onBrandClick, onLogin, onLogout, onWallet }, ref) {
   const { header, texts } = useConfig();
   const cur = header.currency || '';
   const name = web.Name || web.name;
@@ -119,10 +119,10 @@ const AppHeader = forwardRef(function AppHeader({ web = {}, user, homeHref = '#'
             </div>
           )}
           {header.showWallet && (
-            <div className="ta-stat ta-stat--wallet">
+            <button type="button" className="ta-stat ta-stat--wallet ta-stat--link" onClick={onWallet}>
               <span className="ta-stat-label">{texts.wallet}</span>
               <span className="ta-stat-value">{cur} {formatAmount(user.wallet)}</span>
-            </div>
+            </button>
           )}
           {header.showCommission !== false && (
             <div className="ta-stat ta-stat--commission">

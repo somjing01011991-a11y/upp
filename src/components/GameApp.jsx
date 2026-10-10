@@ -120,7 +120,14 @@ function AppInner({
 
   return (
     <div className="ta-app" ref={rootRef}>
-      <AppHeader ref={headerRef} web={web} user={user} onLogin={onLogin} onLogout={onLogout} />
+      <AppHeader
+        ref={headerRef}
+        web={web}
+        user={user}
+        onLogin={onLogin}
+        onLogout={onLogout}
+        onWallet={() => onNavigate?.('wallet') !== false && setNavKey('wallet')}
+      />
 
       <div className="ta-body">
         <CategorySidebar active={cat?.key} onSelect={selectCat} categories={cats} counts={counts} />

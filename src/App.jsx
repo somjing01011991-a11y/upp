@@ -4,6 +4,7 @@ import LoginModal from './components/LoginModal.jsx';
 import WelcomeModal from './components/WelcomeModal.jsx';
 import GamePlayer from './components/GamePlayer.jsx';
 import PromotionPage from './components/PromotionPage.jsx';
+import WalletPage from './components/WalletPage.jsx';
 import RegisterForm from './components/RegisterForm.jsx';
 import theme from './config/theme.json';
 import { web } from './data/session.js';
@@ -65,6 +66,13 @@ export default function App() {
     setPage('home');
     setWelcomeOpen(true);
   };
+  // token rejected by the API: drop the session and ask for a fresh login
+  const denied = () => {
+    clearSession();
+    setMember(null);
+    setPage('home');
+    setLoginOpen(true);
+  };
   const logout = () => {
     clearSession();
     setMember(null);
@@ -72,7 +80,8 @@ export default function App() {
   };
   // "สมัครสมาชิก" (guest replacement of the profile menu) opens the login modal too
   const navigate = (k) => {
-    if (k === 'register') {
+    // guests: "สมัครสมาชิก" and กระเป๋าเงิน open the login form instead
+    if (k === 'register' || (k === 'wallet' && !member)) {
       setLoginOpen(true);
       return false;
     }
@@ -99,10 +108,7 @@ export default function App() {
             return next;
           });
         } else if (res.msg === false && res.access === 'denied') {
-          clearSession();
-          setMember(null);
-          setPage('home');
-          setLoginOpen(true);
+          denied();
         }
       } catch {
         // network hiccup: keep the last balance and try again next tick
@@ -276,7 +282,14 @@ export default function App() {
       onOpenProvider={loadGames}
       onPlay={handlePlay}
     >
-      {page === 'home' || page === 'play' ? undefined : page === 'promo' ? <PromotionPage /> : page === 'signup' ? <RegisterForm onRegistered={registered} /> : <PlaceholderPage title={PAGE_TITLE[page]} />}
+      {page === 'home' || page === 'play' ? undefined : page === 'promo' ? <PromotionPage /> : page === 'wallet' ? (
+        <WalletPage
+          member={member}
+          onLogin={() => setLoginOpen(true)}
+          onDenied={denied}
+          onUse={(w) => console.log('use wallet item', w.refID)} // TODO: ยังไม่ได้กำหนดว่าปุ่ม "ใช้งาน" ทำอะไร
+        />
+      ) : page === 'signup' ? <RegisterForm onRegistered={registered} /> : <PlaceholderPage title={PAGE_TITLE[page]} />}
     </GameApp>
   );
 }
