@@ -86,7 +86,7 @@
     { "key": "other", "label": "เกมอื่นๆ", "icon": "grid", "cover": "", "sources": [], "display": "providers" }
   ],
   "nav": [
-    { "key": "wallet", "label": "ฝากถอน", "icon": "wallet" },
+    { "key": "deposit", "label": "ฝากถอน", "icon": "wallet" },
     { "key": "promo", "label": "โปรโมชั่น", "icon": "gift" },
     { "key": "home", "label": "หน้าแรก", "icon": "home", "primary": true },
     { "key": "profile", "label": "โปรไฟล์", "icon": "user", "guest": { "key": "register", "label": "สมัครสมาชิก" } },

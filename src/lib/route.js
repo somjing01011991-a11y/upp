@@ -2,10 +2,10 @@
 //   /                              หน้าแรก (หมวดแรก)
 //   /category/{หมวด}               หน้าแรก เปิดหมวด เช่น /category/casino
 //   /category/{หมวด}/{ค่าย}        รายชื่อเกมของค่าย เช่น /category/slot/PGS
-//   /promotion /wallet /profile /contact
+//   /promotion /deposit /wallet /profile /contact
 //   /register?ref=…&pref=…         สมัครสมาชิก
 //   /play/{ค่าย}/{เกม}             เล่นเกม (iframe) — /play/{ค่าย} เมื่อเข้าล็อบบี้ของค่าย
-const PAGE_PATH = { promo: '/promotion', wallet: '/wallet', profile: '/profile', contact: '/contact', signup: '/register' };
+const PAGE_PATH = { promo: '/promotion', deposit: '/deposit', wallet: '/wallet', profile: '/profile', contact: '/contact', signup: '/register' };
 const PATH_PAGE = Object.fromEntries(Object.entries(PAGE_PATH).map(([k, v]) => [v, k]));
 
 const HOME = { page: 'home', category: null, provider: null, play: null };

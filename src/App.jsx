@@ -14,7 +14,7 @@ import { captureReferral, clearSession, loadSession, saveSession, toHeaderUser }
 import { playGame, fetchBalance, fetchGames, fetchCategories, fetchProviders, fetchWebConfig } from './lib/api.js';
 
 // หน้าของเมนูบาร์ที่ยังไม่ได้ทำ — แทนที่ด้วยหน้าจริง
-const PAGE_TITLE = { wallet: 'ฝากถอน', promo: 'โปรโมชั่น', profile: 'โปรไฟล์', contact: 'ติดต่อ' };
+const PAGE_TITLE = { deposit: 'ฝากถอน', promo: 'โปรโมชั่น', profile: 'โปรไฟล์', contact: 'ติดต่อ' };
 
 function PlaceholderPage({ title }) {
   return (
