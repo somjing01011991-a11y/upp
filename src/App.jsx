@@ -52,6 +52,7 @@ export default function App() {
   const [playUrl, setPlayUrl] = useState(null); // launch URL of the game on /play/…
   const [notice, setNotice] = useState(''); // small alert modal (game closed, …)
   const [deposit, setDeposit] = useState(0); // wallet increase to announce (0 = no popup)
+  const [walletVisit, setWalletVisit] = useState(0); // bumped on every wallet open → WalletPage remounts and re-fetches
   const [member, setMember] = useState(loadSession); // login response kept in sessionStorage; null = guest
   const [loginOpen, setLoginOpen] = useState(false);
   const [welcomeOpen, setWelcomeOpen] = useState(false); // signup success popup
@@ -90,6 +91,7 @@ export default function App() {
       setLoginOpen(true);
       return false;
     }
+    if (k === 'wallet') setWalletVisit((n) => n + 1);
     setPage(k);
     return true;
   };
@@ -108,7 +110,10 @@ export default function App() {
           const { totalWallet, CraditGames, totalCommission } = res.data;
           // money arrived in the wallet since the last check → tell the player (adds up until closed)
           const gained = Number(totalWallet) - Number(memberRef.current?.totalWallet);
-          if (gained > 0) setDeposit((d) => d + gained);
+          if (gained > 0) {
+            setDeposit((d) => d + gained);
+            setWalletVisit((n) => n + 1); // a list already on screen picks up the new item
+          }
           setMember((m) => {
             if (!m || m.accesstoken !== token) return m;
             const next = { ...m, totalWallet, CraditGames, totalCommission };
@@ -272,6 +277,7 @@ export default function App() {
               onView={() => {
                 setDeposit(0);
                 setPlayUrl(null);
+                setWalletVisit((n) => n + 1);
                 setRoute((r) => ({ ...r, page: 'wallet', play: null }));
               }}
               onClose={() => setDeposit(0)}
@@ -309,6 +315,7 @@ export default function App() {
     >
       {page === 'home' || page === 'play' ? undefined : page === 'promo' ? <PromotionPage /> : page === 'wallet' ? (
         <WalletPage
+          key={walletVisit}
           member={member}
           onLogin={() => setLoginOpen(true)}
           onDenied={denied}
