@@ -610,3 +610,13 @@
 .ta-bonus-confirm { display: flex; flex-direction: column; gap: 12px; }
 .ta-bonus-confirm-q { margin: 0; font-size: 15px; font-weight: 600; }
 .ta-bonus-error { margin: 0; text-align: center; font-size: 13px; }
+
+/* ฝากถอน tabs */
+.ta-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 4px; background: var(--c-surface); border: 1px solid var(--c-line); border-radius: var(--r-pill); }
+.ta-tab {
+  height: 38px; font: inherit; font-size: 15px; font-weight: 600; color: var(--c-muted);
+  background: transparent; border: 0; border-radius: var(--r-pill); cursor: pointer;
+}
+.ta-tab.is-on { background: var(--c-primary); color: var(--c-on-primary); }
+.ta-tab:focus-visible { outline: 2px solid var(--c-focus); outline-offset: 2px; }
+.ta-tab-panel { padding-top: 8px; }

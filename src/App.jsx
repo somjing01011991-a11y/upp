@@ -6,6 +6,7 @@ import GamePlayer from './components/GamePlayer.jsx';
 import DepositModal from './components/DepositModal.jsx';
 import PromotionPage from './components/PromotionPage.jsx';
 import WalletPage from './components/WalletPage.jsx';
+import DepositPage from './components/DepositPage.jsx';
 import RegisterForm from './components/RegisterForm.jsx';
 import theme from './config/theme.json';
 import { web } from './data/session.js';
@@ -14,7 +15,7 @@ import { captureReferral, clearSession, loadSession, saveSession, toHeaderUser }
 import { playGame, fetchBalance, fetchGames, fetchCategories, fetchProviders, fetchWebConfig } from './lib/api.js';
 
 // หน้าของเมนูบาร์ที่ยังไม่ได้ทำ — แทนที่ด้วยหน้าจริง
-const PAGE_TITLE = { deposit: 'ฝากถอน', promo: 'โปรโมชั่น', profile: 'โปรไฟล์', contact: 'ติดต่อ' };
+const PAGE_TITLE = { promo: 'โปรโมชั่น', profile: 'โปรไฟล์', contact: 'ติดต่อ' };
 
 function PlaceholderPage({ title }) {
   return (
@@ -313,7 +314,7 @@ export default function App() {
       onOpenProvider={loadGames}
       onPlay={handlePlay}
     >
-      {page === 'home' || page === 'play' ? undefined : page === 'promo' ? <PromotionPage /> : page === 'wallet' ? (
+      {page === 'home' || page === 'play' ? undefined : page === 'promo' ? <PromotionPage /> : page === 'deposit' ? <DepositPage /> : page === 'wallet' ? (
         <WalletPage
           key={walletVisit}
           member={member}
