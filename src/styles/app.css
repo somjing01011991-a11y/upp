@@ -606,3 +606,4 @@
 .ta-bonus-desc { margin: 0; padding: 10px; white-space: pre-line; font-size: 13px; line-height: 1.6; color: var(--c-muted); background: var(--c-surface); border-radius: var(--r-sm); }
 .ta-bonus-actions { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
 .ta-bonus-pick { height: 34px; padding: 0 22px; margin-left: auto; }
+.ta-bonus-rows--cols { grid-template-rows: repeat(3, auto); grid-auto-flow: column; }

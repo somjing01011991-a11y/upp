@@ -19,7 +19,7 @@ function Row({ name, children }) {
 }
 
 /** One option: title, figures, "ดูรายละเอียด" (expands the description) and "เลือก". */
-function Option({ title, cover, rows, description, onSelect }) {
+function Option({ title, cover, rows, columns, description, onSelect }) {
   const [more, setMore] = useState(false);
   return (
     <li className="ta-bonus">
@@ -31,7 +31,7 @@ function Option({ title, cover, rows, description, onSelect }) {
         )}
         <h4>{title}</h4>
       </div>
-      <dl className="ta-bonus-rows">{rows}</dl>
+      <dl className={`ta-bonus-rows${columns ? ' ta-bonus-rows--cols' : ''}`}>{rows}</dl>
       {more && description && <p className="ta-bonus-desc">{description}</p>}
       <div className="ta-bonus-actions">
         {description && (
@@ -119,13 +119,15 @@ export default function BonusSelectModal({ member, item, container, onSelect, on
                         key={b.bonusID}
                         title={b.bonusName}
                         cover={b.media?.coverImage || ''}
+                        columns
                         rows={
                           <>
+                            {/* two columns, filled top to bottom: money on the left, turnover + games on the right */}
                             <Row name="โบนัสที่ได้รับสูงสุด">฿ {formatAmount(b.maxReceiveLimit)}</Row>
                             <Row name="รวม">฿ {formatAmount(b.totalCredit)}</Row>
                             <Row name="ถอนสูงสุด">฿ {formatAmount(b.maxWithdraw)}</Row>
-                            <Row name="ประเภทเทิร์นโอเวอร์">{label(TURNOVER_TYPE, b.turnoverType)}</Row>
                             <Row name="จำนวนเทิร์นโอเวอร์">{Number(b.turnoverRequired || 0).toLocaleString('th-TH')}</Row>
+                            <Row name="ประเภทเทิร์นโอเวอร์">{label(TURNOVER_TYPE, b.turnoverType)}</Row>
                             <Row name="ประเภทเกมที่เล่นได้">{(b.gameTypes || []).map((g) => label(GAME_TYPE, g)).join(', ')}</Row>
                           </>
                         }
