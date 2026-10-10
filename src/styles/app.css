@@ -580,3 +580,11 @@
 .ta-wallet-use { flex: none; height: 36px; padding: 0 18px; }
 .ta-stat--link { font: inherit; text-align: left; color: inherit; cursor: pointer; }
 .ta-stat--link:hover { border-color: var(--c-primary); }
+
+/* wallet deposit popup — above the game player */
+.ta-deposit-backdrop { z-index: 70; }
+.ta-deposit-title { margin: 0; font-size: 18px; }
+.ta-deposit-amount { color: var(--c-positive); }
+.ta-deposit-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.ta-deposit-actions .ta-btn { height: 44px; margin: 0; }
+.ta-deposit-close { background: var(--c-raised); color: var(--c-text); }

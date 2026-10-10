@@ -3,6 +3,7 @@ import GameApp from './components/GameApp.jsx';
 import LoginModal from './components/LoginModal.jsx';
 import WelcomeModal from './components/WelcomeModal.jsx';
 import GamePlayer from './components/GamePlayer.jsx';
+import DepositModal from './components/DepositModal.jsx';
 import PromotionPage from './components/PromotionPage.jsx';
 import WalletPage from './components/WalletPage.jsx';
 import RegisterForm from './components/RegisterForm.jsx';
@@ -50,10 +51,13 @@ export default function App() {
   const setPage = (p) => setRoute((r) => ({ ...r, page: p }));
   const [playUrl, setPlayUrl] = useState(null); // launch URL of the game on /play/…
   const [notice, setNotice] = useState(''); // small alert modal (game closed, …)
+  const [deposit, setDeposit] = useState(0); // wallet increase to announce (0 = no popup)
   const [member, setMember] = useState(loadSession); // login response kept in sessionStorage; null = guest
   const [loginOpen, setLoginOpen] = useState(false);
   const [welcomeOpen, setWelcomeOpen] = useState(false); // signup success popup
   const user = useMemo(() => toHeaderUser(member), [member]);
+  const memberRef = useRef(member);
+  memberRef.current = member;
 
   const onLoggedIn = (res) => {
     saveSession(res);
@@ -101,6 +105,9 @@ export default function App() {
         if (stopped) return;
         if (res.msg === true && res.data) {
           const { totalWallet, CraditGames, totalCommission } = res.data;
+          // money arrived in the wallet since the last check → tell the player (adds up until closed)
+          const gained = Number(totalWallet) - Number(memberRef.current?.totalWallet);
+          if (gained > 0) setDeposit((d) => d + gained);
           setMember((m) => {
             if (!m || m.accesstoken !== token) return m;
             const next = { ...m, totalWallet, CraditGames, totalCommission };
@@ -255,29 +262,44 @@ export default function App() {
       onLogin={() => setLoginOpen(true)}
       onLogout={logout}
       overlay={
-        play && member ? (
-          <GamePlayer url={playUrl} member={member} onExit={exitGame} />
-        ) : notice ? (
-          <div className="ta-modal-backdrop" onClick={() => setNotice('')}>
-            <div className="ta-modal ta-alert-modal" role="alertdialog" aria-modal="true" onClick={(e) => e.stopPropagation()}>
-              <p>{notice}</p>
-              <button type="button" className="ta-btn ta-login-submit" onClick={() => setNotice('')} autoFocus>
-                ตกลง
-              </button>
+        <>
+          {deposit > 0 && member && (
+            <DepositModal
+              amount={deposit}
+              onView={() => {
+                setDeposit(0);
+                setPlayUrl(null);
+                setRoute((r) => ({ ...r, page: 'wallet', play: null }));
+              }}
+              onClose={() => setDeposit(0)}
+            />
+          )}
+          {play && member ? (
+            <GamePlayer url={playUrl} member={member} onExit={exitGame} />
+          ) : notice ? (
+            <div className="ta-modal-backdrop" onClick={() => setNotice('')}>
+              <div className="ta-modal ta-alert-modal" role="alertdialog" aria-modal="true" onClick={(e) => e.stopPropagation()}>
+                <p>{notice}</p>
+                <button type="button" className="ta-btn ta-login-submit" onClick={() => setNotice('')} autoFocus>
+                  ตกลง
+                </button>
+              </div>
             </div>
-          </div>
-        ) : welcomeOpen ? (
-          <WelcomeModal siteName={siteWeb.Name} onClose={() => setWelcomeOpen(false)} />
-        ) : loginOpen && (
-          <LoginModal
-            onSuccess={onLoggedIn}
-            onClose={() => setLoginOpen(false)}
-            onRegister={() => {
-              setLoginOpen(false);
-              setPage('signup');
-            }}
-          />
-        )
+          ) : welcomeOpen ? (
+            <WelcomeModal siteName={siteWeb.Name} onClose={() => setWelcomeOpen(false)} />
+          ) : loginOpen && (
+            <LoginModal
+              onSuccess={onLoggedIn}
+              onClose={() => setLoginOpen(false)}
+              onRegister={() => {
+                setLoginOpen(false);
+                setPage('signup');
+              }}
+            />
+          )
+
+          }
+        </>
       }
       onOpenProvider={loadGames}
       onPlay={handlePlay}
